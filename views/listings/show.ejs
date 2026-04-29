@@ -1,7 +1,12 @@
 <% layout("/layouts/boilerplate") -%>
 <script>
     const mapToken="<%=process.env.MAP_TOKEN%>";
-    const listing=<%- JSON.stringify(listing)%>;
+</script>
+<script id="listing-data" type="application/json">
+    <%- JSON.stringify(listing) %>
+</script>
+<script>
+    const listing = JSON.parse(document.getElementById('listing-data').textContent);
 </script>
 <style>
     /* Custom CSS for show page */
