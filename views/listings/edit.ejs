@@ -42,20 +42,30 @@
             <label for="price" 
             class="form-label">Price:</label>
             <input name="listing[price]" 
-            value="<%= listing.image %>"
+            value="<%= listing.price %>"
             type="number"
             class="form-control"
             required>
             <div class="invalid-feedback">Price should be valid</div>
         </div>
-        <div class="mb-3 col-md-8"> 
+        <div class="mb-3 col-md-4"> 
             <label for="country" 
             class="form-label">Country:</label>
             <input name="listing[country]" 
             value="<%= listing.country %>" type="text"
-            class="form control"
+            class="form-control"
             required>
             <div class="invalid-feedback">Country name should be valid</div>
+        </div>
+        <div class="mb-3 col-md-4">
+            <label for="category" class="form-label">Category</label>
+            <select name="listing[category]" class="form-select" required>
+                <% const categories = ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing pools", "Camping", "Farms", "Arctic", "Domes", "Cruise"]; %>
+                <% for(let cat of categories) { %>
+                    <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %>><%= cat %></option>
+                <% } %>
+            </select>
+            <div class="invalid-feedback">Please select a category</div>
         </div>
     </div>
         <div class="mb-3"> 

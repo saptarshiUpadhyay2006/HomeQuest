@@ -1,65 +1,254 @@
 <style>
-  .btn-search{
-    background-color: rgb(227, 73, 73);
+  .custom-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    padding: 0.8rem 0;
+  }
+  .navbar-brand i {
+    font-size: 2.2rem;
+    color: #e34949;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .navbar-brand:hover i {
+    transform: rotate(20deg) scale(1.15);
+  }
+  .brand-text {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #e34949;
+    margin-left: 0.5rem;
+    letter-spacing: -0.5px;
+  }
+  .nav-link {
+    font-weight: 500;
+    color: #4a4a4a !important;
+    position: relative;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.3s ease;
+    margin: 0 0.2rem;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2.5px;
+    bottom: 2px;
+    left: 50%;
+    background-color: #e34949;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+  .nav-link:hover {
+    color: #e34949 !important;
+  }
+  .nav-link:hover::after {
+    width: 70%;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+  }
+  .search-inp {
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem 0.6rem 2.8rem;
+    font-size: 0.95rem;
+    border: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .search-inp:focus {
+    background-color: #fff;
+    border-color: #e34949;
+    box-shadow: 0 0 0 0.25rem rgba(227, 73, 73, 0.15);
+    outline: none;
+  }
+  .search-icon-left {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    z-index: 4;
+    transition: color 0.3s ease;
+  }
+  .search-inp:focus + .search-icon-left {
+    color: #e34949;
+  }
+  .btn-search {
+    background-color: #e34949;
     color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+    border-radius: 50px;
+    padding: 0.55rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 10px rgba(227, 73, 73, 0.25);
+    margin-left: 0.5rem;
   }
-  .btn-search:hover{
-    background-color: rgb(227, 73, 73);
+  .btn-search:hover {
+    background-color: #d13636;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(227, 73, 73, 0.35);
   }
-  .btn-search i{
-    display: inline;
-    margin-right: 0.5rem;
+  
+  /* User Menu Dropdown Styles */
+  .user-menu-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    padding: 0.3rem 0.5rem 0.3rem 0.8rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   }
-  .search-inp{
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
+  .user-menu-btn:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .user-avatar i {
+    font-size: 1.8rem;
+    color: #777;
+    transition: color 0.3s ease;
+  }
+  .user-menu-btn:hover .user-avatar i {
+    color: #555;
+  }
+  
+  .custom-dropdown {
+    background-color: #ffffff !important;
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,0.08);
+    padding: 0.5rem 0;
+    min-width: 240px;
+    animation: fadeInDropdown 0.2s ease-out;
+    margin-top: 0.5rem !important;
+    z-index: 1050;
+  }
+  
+  @keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .custom-dropdown .dropdown-item {
+    padding: 0.6rem 1.2rem;
+    transition: background-color 0.2s ease;
+    color: #333;
+    font-size: 0.95rem;
+  }
+  .custom-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+  .custom-dropdown .dropdown-item.fw-bold {
+    color: #222;
+  }
+  
+  @media (max-width: 768px) {
+    .search-container {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      max-width: 100%;
+    }
+    .custom-navbar {
+      padding: 0.5rem 0;
+    }
+    .navbar-collapse {
+      background-color: #ffffff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      margin-top: 0.5rem;
+      position: absolute;
+      top: 100%;
+      left: 1rem;
+      right: 1rem;
+      z-index: 1040;
+    }
+    .user-menu-btn {
+      margin-top: 0.5rem;
+    }
+    .custom-dropdown {
+      width: 100%;
+      text-align: center;
+      border: none;
+      box-shadow: none !important;
+      padding: 0;
+    }
   }
 </style>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings">
+<nav class="navbar navbar-expand-md custom-navbar sticky-top">
+  <div class="container-fluid px-3 px-md-4">
+    <a class="navbar-brand d-flex align-items-center" href="/listings">
       <i class="fa-regular fa-compass"></i>
+      <span class="brand-text d-none d-sm-block">HomeQuest</span>
     </a>
-    <div class="navbar-nav">
-      <a class="nav-link" href="/listings">Explore</a>
-    </div>
-
+    
     <button 
-      class="navbar-toggler" 
+      class="navbar-toggler border-0 shadow-none" 
       type="button" 
       data-bs-toggle="collapse" 
-      data-bs-target="#navbarSupportedContent">
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" 
+      aria-expanded="false" 
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <form class="d-flex ms-auto" role="search" method="GET" action="/listings" style="margin-left: 100px;">
-        <input
-          class="form-control me-2 search-inp"
-          type="search"
-          placeholder="Search destinations"
-          name="q"
-          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
-        />
-        <button class="btn btn-search d-flex align-items-center" type="submit">
-          <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+      <div class="navbar-nav me-auto mb-2 mb-lg-0 ms-md-4">
+        <a class="nav-link" href="/listings">Explore</a>
+      </div>
+
+      <form class="d-flex mx-auto search-container" role="search" method="GET" action="/listings">
+        <div class="position-relative flex-grow-1">
+          <input
+            class="form-control search-inp"
+            type="search"
+            placeholder="Search destinations"
+            name="q"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          />
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+        </div>
+        <button class="btn-search d-flex align-items-center justify-content-center" type="submit">
+          Search
         </button>
       </form>
 
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">HomeQuest your home</a>
-        <% if(!currUser) { %>
-          <a class="nav-link" href="/signup"><b>Sign Up</b></a>
-          <a class="nav-link" href="/login"><b>Log in</b></a>
-        <% } %>
-        <% if(currUser) { %>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
-        <% } %>
+      <div class="navbar-nav ms-auto align-items-center mt-3 mt-md-0 flex-row justify-content-center">
+        <a class="nav-link fw-bold me-3 d-none d-md-block" style="font-size: 0.95rem; color: #222 !important;" href="/listings/new">Add Your Home</a>
+        
+        <div class="dropdown">
+          <button class="user-menu-btn d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bars" style="color: #555; margin-right: 2px;"></i>
+            <div class="user-avatar ms-2 d-flex align-items-center">
+              <i class="fa-solid fa-circle-user"></i>
+            </div>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end custom-dropdown shadow-lg">
+            <% if(!currUser) { %>
+              <li><a class="dropdown-item fw-bold" href="/signup">Sign up</a></li>
+              <li><a class="dropdown-item" href="/login">Log in</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item d-md-none" href="/listings/new">Add Your Home</a></li>
+            <% } else { %>
+              <li><span class="dropdown-item-text text-muted" style="font-size: 0.85rem;">Welcome back!</span></li>
+              <li><a class="dropdown-item fw-bold" href="/listings/new">Add Your Home</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger fw-bold" href="/logout">Log out</a></li>
+            <% } %>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

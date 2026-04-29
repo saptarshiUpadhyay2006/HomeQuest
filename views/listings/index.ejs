@@ -1,30 +1,65 @@
 <% layout("/layouts/boilerplate") %>
  <body>
 <style>
-    #filters{
+    #filters-wrapper {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        margin-top: 0.5rem;
+        flex-wrap: nowrap;
+        gap: 1rem;
+    }
+    #filters-container {
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        white-space: nowrap;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        padding-bottom: 0.5rem;
+        flex: 1;
+        min-width: 0;
+    }
+    #filters-container::-webkit-scrollbar {
+        display: none;
+    }
+    #filters {
+        display: flex;
+        flex-wrap: nowrap;
         align-items: center;
     }
 
-    .filter{
+    .filter-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .filter {
         text-align: center;
-        margin-right:2rem ;
-        margin-top: 2rem;
-        opacity: 0.7;
+        margin-right: 2.5rem;
+        margin-top: 1rem;
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        border-bottom: 2px solid transparent;
+        padding-bottom: 0.3rem;
     }
     .filter i {
-    font-size: 1.25rem;
+        font-size: 1.4rem;
+        margin-bottom: 0.3rem;
     }
-
-    
-    .filter:hover{
-        opacity:1;
+    .filter:hover {
+        opacity: 1;
         cursor: pointer;
+        border-bottom: 2px solid #ccc;
     }
-
-    .filter p{
-        font-size: 0.8rem;
+    .filter.active {
+        opacity: 1;
+        border-bottom: 2px solid #222;
+        color: #222;
+    }
+    .filter p {
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin: 0;
     }
 
     .tax-info{
@@ -32,103 +67,118 @@
     }
 
     .tax-toggle{
-        border:1px solid black;;
+        border:1px solid #ddd;
         border-radius: 1rem;
         height: 3.25rem;
         padding: 1rem;
-        margin-left: 5rem;
+        margin-left: auto;
         display: flex;
         align-items: center;
+        white-space: nowrap;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .listing-card {
+        background: transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .listing-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    .card-img-top {
+        transition: transform 0.3s ease;
+    }
+    .card-img-container {
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+        position: relative;
+        padding-bottom: 95%; /* Near 1:1 Aspect Ratio */
+        height: 0;
+    }
+    .card-img-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .card-title-location {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
     }
 </style>
 
-    <div id="filters">
-        <div class="filter">
-            <div><i class="fa-solid fa-fire"></i></div>
-            <p>Trending</p>
+    <div id="filters-wrapper">
+        <div id="filters-container">
+            <div id="filters">
+            <% 
+            const categories = [
+                { name: "Trending", icon: "fa-fire" },
+                { name: "Rooms", icon: "fa-bed" },
+                { name: "Iconic Cities", icon: "fa-mountain-city" },
+                { name: "Mountains", icon: "fa-mountain" },
+                { name: "Castles", icon: "fa-brands fa-fort-awesome" },
+                { name: "Amazing pools", icon: "fa-person-swimming" },
+                { name: "Camping", icon: "fa-campground" },
+                { name: "Farms", icon: "fa-cow" },
+                { name: "Arctic", icon: "fa-snowflake" },
+                { name: "Domes", icon: "fa-landmark-dome" },
+                { name: "Cruise", icon: "fa-ship" }
+            ];
+            %>
+            
+            <% for(let cat of categories) { %>
+                <a href="/listings?category=<%= encodeURIComponent(cat.name) %>" class="filter-link">
+                    <div class="filter <%= typeof activeCategory !== 'undefined' && activeCategory === cat.name ? 'active' : '' %>">
+                        <div><i class="<%= cat.icon.includes('fa-brands') ? cat.icon : 'fa-solid ' + cat.icon %>"></i></div>
+                        <p><%= cat.name %></p>
+                    </div>
+                </a>
+            <% } %>
+            </div>
         </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-bed"></i></div>
-            <p>Rooms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain-city"></i></div>
-            <p>Iconic Cities</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain"></i></div>
-            <p>Mountains</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-brands fa-fort-awesome"></i></div>
-            <p>Castles</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-swimming"></i></div>
-            <p>Amazing pools</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-campground"></i></div>
-            <p>Camping</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-cow"></i></div>
-            <p>Farms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-snowflake"></i></div>
-            <p>Arctic</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-landmark-dome"></i></div>
-            <p>Domes</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-ship"></i></div>
-            <p>Cruise</p>
-        </div>
+
         <div class="tax-toggle">
             <div class="form-check-reverse form-switch">
                 <input class="form-check-input" 
                 type="checkbox" role="switch" 
                 id="switchCheckDefault">
                 <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
-              </div>
+            </div>
         </div>
     </div>
 
-    <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
+    <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 mt-2">
         <% for(let listing of allListings){ %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
-                <div class="card col listing-card">
-                    <img src="<%= listing.image.url %>" 
-                         class="card-img-top" alt="listing_image" 
-                         style="height: 20rem">
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <b>
+            <div class="col">
+                <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+                    <div class="card listing-card border-0 h-100">
+                        <div class="card-img-container">
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                        </div>
+                        <div class="card-body px-1 py-3">
+                            <h5 class="card-title-location text-truncate mb-1"><%= listing.location %>, <%= listing.country %></h5>
+                            <p class="card-text text-muted mb-2 text-truncate" style="font-size: 0.95rem;"><%= listing.title %></p>
                             <p class="card-text">
-                                <%= listing.title %><br>
-                        </b>
-                        <% if (listing.price != null) { %>
-                            &#8377;<%= listing.price.toLocaleString("en-IN") %>/night
-                            <i class="tax-info"> &nbsp;&nbsp;+18%GST</i>
-                        <% } else { %>
-                            Price not available
-                        <% } %>
+                                <% if (listing.price != null) { %>
+                                    <span class="fw-bold fs-6">&#8377;<%= listing.price.toLocaleString("en-IN") %></span> 
+                                    <span class="text-muted">night</span>
+                                    <span class="tax-info text-muted ms-1" style="font-size: 0.85rem;">+18% GST</span>
+                                <% } else { %>
+                                    <span class="text-muted">Price not available</span>
+                                <% } %>
                             </p>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         <% } %>
     </div>
-    
-    
-    <!-- <ul>
-        <% for(let listing of allListings){%>
-            <li><a href="/listings/<%=listing._id %>"><%=listing.title%></a></li>
-        <% }%>
-        </ul> -->
 
         <% if (allListings.length === 0) { %>
             <p class="mt-3">No results found<% if (searchQuery) { %> for "<%= searchQuery %>"<% } %>.</p>
