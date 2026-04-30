@@ -3,7 +3,7 @@ const router=express.Router();
 const User=require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport=require("passport");
-const { saveRedirectUrl } = require("../middleware.js");
+const { saveRedirectUrl, isLoggedIn } = require("../middleware.js");
 
 const userController=require("../controllers/users.js");
 
@@ -20,5 +20,8 @@ router.route("/login")
         userController.login);
 
 router.get("/logout",userController.logout);
+
+router.get("/profile", isLoggedIn, wrapAsync(userController.renderProfile));
+router.post("/wishlist/:id", isLoggedIn, wrapAsync(userController.toggleWishlist));
 
 module.exports=router;

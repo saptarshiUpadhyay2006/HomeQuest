@@ -1,34 +1,116 @@
 <% layout("/layouts/boilerplate") -%>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">Signup on HomeQuest</h1>
-    <div class="col-6 offset-3">
-        <form action="/signup" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input name="username" 
-                id="username"
-                type="text"
-                class="form-control"
-                required>
-                <div class="valid-feedback">looks good!</div>
+<style>
+    .auth-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--border-color);
+        border-radius: 1.5rem;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .auth-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .auth-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 2.2rem;
+        color: var(--text-color);
+        letter-spacing: -0.5px;
+    }
+    .form-control-custom {
+        border-radius: 0.8rem;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: all 0.2s ease;
+    }
+    .form-control-custom:focus {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        border-color: #e34949;
+        box-shadow: 0 0 0 0.25rem rgba(227, 73, 73, 0.25);
+    }
+    .form-label {
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .btn-auth {
+        background: linear-gradient(135deg, #e34949 0%, #d23232 100%);
+        border: none;
+        color: white;
+        border-radius: 0.8rem;
+        padding: 0.9rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(227, 73, 73, 0.4);
+    }
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(227, 73, 73, 0.6);
+        color: white;
+    }
+    .btn-auth:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 10px rgba(227, 73, 73, 0.4);
+    }
+</style>
+
+<div class="row mt-5 mb-5">
+    <div class="col-10 col-md-8 col-lg-6 col-xl-4 offset-1 offset-md-2 offset-lg-3 offset-xl-4">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <h1 class="auth-title mb-2">Join HomeQuest</h1>
+                <p class="text-muted">Create an account to start hosting or booking</p>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input name="email" 
-                id="email"
-                type="email"
-                class="form-control"
-                required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input name="password" 
-                id="password"
-                type="password"
-                class="form-control"
-                required>
-            </div>
-            <button class="btn btn-success">Signup</button>
-        </form>
+            
+            <form action="/signup" method="POST" class="needs-validation" novalidate>
+                <div class="mb-4">
+                    <label for="username" class="form-label">Username</label>
+                    <input name="username" 
+                           id="username"
+                           type="text"
+                           class="form-control form-control-custom"
+                           placeholder="Choose a username"
+                           required>
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please provide a valid username.</div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="email" class="form-label">Email</label>
+                    <input name="email" 
+                           id="email"
+                           type="email"
+                           class="form-control form-control-custom"
+                           placeholder="Enter your email address"
+                           required>
+                    <div class="invalid-feedback">Please provide a valid email address.</div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input name="password" 
+                           id="password"
+                           type="password"
+                           class="form-control form-control-custom"
+                           placeholder="Create a strong password"
+                           required>
+                    <div class="invalid-feedback">Please provide a password.</div>
+                </div>
+                
+                <button class="btn btn-auth w-100 mt-2">Sign Up</button>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">Already have an account? <a href="/login" class="text-decoration-none" style="color: #e34949; font-weight: 600;">Log in</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

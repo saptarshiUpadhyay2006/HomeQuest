@@ -1,21 +1,19 @@
 <% layout("/layouts/boilerplate") -%>
 <div class="row mt-3">
-    <div class="col-8 offset-2">
-        <!-- <br>
-        <br> -->
-
-    <h3>Create a new listing</h3>
-    <form method="POST" action="/listings" 
-    novalidate 
-    class="needs-validation"
-    enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input name="listing[title]" 
-            placeholder="Add a catchy title" type="text"
-            required>
-            <div class="valid-feedback">Title looks good!</div>
-        </div>
+    <div class="col-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2">
+        <h3 class="mb-4">Create a New Listing</h3>
+        <form method="POST" action="/listings" 
+        novalidate 
+        class="needs-validation"
+        enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input name="listing[title]" 
+                placeholder="Add a catchy title" type="text"
+                class="form-control"
+                required>
+                <div class="valid-feedback">Title looks good!</div>
+            </div>
         <div class="mb-3"><label for="description" class="form-label">Description</label>
             <textarea name="listing[description]" 
             class="form-control"
@@ -72,20 +70,17 @@
                 <div class="invalid-feedback">Please select a category</div>
             </div>
         </div>
-        <br>
-        <div class="mb-3"><label for="location" class="form-label">Location</label>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
             <input name="listing[location]" 
-            placeholder="Kolkata,WB" 
+            placeholder="Kolkata, WB" 
             type="text"
             class="form-control"
             required>
             <div class="invalid-feedback">Location should be valid</div>
         </div>
         
-        <br><br>
-        <button class="btn btn-dark add-btn mt-3">add</button>
-        <br>
-        <br>
+        <button class="btn btn-dark add-btn mt-4 mb-5">Add Listing</button>
     </form>
 </div>
 </div>

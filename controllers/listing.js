@@ -85,23 +85,37 @@ module.exports.destroyListing=async(req,res)=>{
 module.exports.index = async (req, res) => {
     const q = (req.query.q || "").trim();
     const category = req.query.category;
-    console.log("QUERY:", req.query);
-    let allListings;
-  
+    const minPrice = req.query.minPrice;
+    const maxPrice = req.query.maxPrice;
+    
+    let query = {};
+    
     if (category) {
-      allListings = await Listing.find({ category: category });
-    } else if (q) {
-      allListings = await Listing.find({
-        $or: [
+        query.category = category;
+    }
+    
+    if (q) {
+        query.$or = [
           { title:    { $regex: q, $options: "i" } },
           { location: { $regex: q, $options: "i" } },
           { country:  { $regex: q, $options: "i" } },
-        ],
-      });
-    } else {
-      allListings = await Listing.find({});
+        ];
+    }
+    
+    if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) query.price.$gte = Number(minPrice);
+        if (maxPrice) query.price.$lte = Number(maxPrice);
     }
   
-    res.render("listings/index.ejs", { allListings, searchQuery: q, activeCategory: category });
+    const allListings = await Listing.find(query);
+  
+    res.render("listings/index.ejs", { 
+        allListings, 
+        searchQuery: q, 
+        activeCategory: category,
+        minPrice: minPrice || "",
+        maxPrice: maxPrice || ""
+    });
   };
   

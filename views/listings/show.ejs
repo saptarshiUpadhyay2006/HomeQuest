@@ -9,120 +9,196 @@
     const listing = JSON.parse(document.getElementById('listing-data').textContent);
 </script>
 <style>
-    /* Custom CSS for show page */
+    /* Premium Custom CSS for show page */
     .hero-img-container {
         width: 100%;
         height: 60vh;
         border-radius: 1.5rem;
         overflow: hidden;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        position: relative;
+    }
+    @media (max-width: 768px) {
+        .hero-img-container {
+            height: 40vh;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
     }
     .hero-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .hero-img-container:hover .hero-img {
+        transform: scale(1.04);
     }
     .host-info {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+        margin-bottom: 2rem;
     }
     .host-avatar {
-        width: 50px;
-        height: 50px;
+        width: 55px;
+        height: 55px;
         border-radius: 50%;
-        background-color: #e34949;
+        background: linear-gradient(135deg, #e34949 0%, #c93b3b 100%);
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: bold;
+        box-shadow: 0 4px 12px rgba(227, 73, 73, 0.3);
     }
     .sticky-box {
         position: sticky;
         top: 100px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
         border-radius: 1.5rem;
         padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    @media (max-width: 991px) {
+        .sticky-box {
+            position: static;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+    }
+    .sticky-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
     .price-display {
-        font-size: 1.8rem;
-        font-weight: 700;
+        font-size: 2.2rem;
+        font-weight: 800;
         margin-bottom: 0;
+        color: var(--text-color);
+        letter-spacing: -1px;
     }
     .price-night {
-        font-size: 1rem;
-        color: #666;
-        font-weight: 400;
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 0.3rem;
     }
     .review-card {
-        background: rgba(255, 255, 255, 0.6);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        transition: transform 0.2s ease;
+        border: 1px solid var(--border-color);
+        border-radius: 1.2rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .review-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        background: var(--card-bg);
     }
     .map-container {
-        height: 350px;
+        height: 400px;
         width: 100%;
-        border-radius: 1rem;
+        border-radius: 1.2rem;
         margin-top: 1.5rem;
         overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
     .category-badge {
-        background: #f0f0f0;
-        padding: 0.4rem 1rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 0.5rem 1.2rem;
         border-radius: 2rem;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #444;
+        color: var(--text-muted);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    h1, h2, h3, h4 {
+    .category-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+    h1, h2, h3, h4, h5, h6 {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-weight: 700;
     }
     .btn-primary-custom {
-        background-color: #e34949;
+        background: linear-gradient(135deg, #e34949 0%, #d23232 100%);
         border: none;
         color: white;
-        border-radius: 0.5rem;
+        border-radius: 0.8rem;
         padding: 0.8rem 1.5rem;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1.05rem;
         width: 100%;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(227, 73, 73, 0.4);
     }
     .btn-primary-custom:hover {
-        background-color: #c93b3b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(227, 73, 73, 0.6);
         color: white;
     }
+    .btn-primary-custom:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 10px rgba(227, 73, 73, 0.4);
+    }
     .btn-outline-custom {
-        border: 1px solid #222;
-        color: #222;
+        color: var(--text-color);
         background: transparent;
-        border-radius: 0.5rem;
-        padding: 0.8rem 1.5rem;
-        font-weight: 600;
+        border: 1px solid var(--border-color);
+        border-radius: 0.8rem;
+        padding: 0.7rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.05rem;
         width: 100%;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
     }
     .btn-outline-custom:hover {
-        background-color: #f8f9fa;
-        color: #222;
+        background-color: #222;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .wishlist-btn-show {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        z-index: 10;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+    .wishlist-btn-show:hover {
+        transform: scale(1.1);
+    }
+    .wishlist-btn-show .fa-solid {
+        color: #e34949;
     }
 </style>
 
@@ -150,6 +226,11 @@
     <!-- Hero Image -->
     <div class="hero-img-container">
         <img src="<%=listing.image.url%>" class="hero-img" alt="<%= listing.title %>">
+        <% if(currUser) { %>
+            <button class="wishlist-btn-show" onclick="toggleWishlist(event, '<%= listing._id %>')">
+                <i class="<%= currUser.wishlist && currUser.wishlist.includes(listing._id) ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
+            </button>
+        <% } %>
     </div>
 
     <div class="row">
@@ -277,8 +358,64 @@
                         </form>
                     </div>
                 <% } else { %>
-                    <button class="btn btn-primary-custom mb-3">Reserve</button>
+                    <form action="/listings/<%= listing._id %>/bookings" method="POST" class="booking-form">
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.8rem;">CHECK-IN</label>
+                                <input type="date" name="checkIn" id="checkInDate" class="form-control" required style="border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.6rem;">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.8rem;">CHECK-OUT</label>
+                                <input type="date" name="checkOut" id="checkOutDate" class="form-control" required style="border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.6rem;">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 fw-bold d-none p-3" id="priceCalculationContainer" style="background: rgba(0,0,0,0.03); border-radius: 0.5rem;">
+                            <span class="text-muted">₹<span id="basePrice"><%= listing.price %></span> × <span id="numberOfNights">0</span> nights</span>
+                            <span>₹<span id="totalPriceDisplay">0</span></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom mb-3" id="reserveBtn">Reserve</button>
+                    </form>
                     <p class="text-center text-muted small m-0">You won't be charged yet</p>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const checkInInput = document.getElementById('checkInDate');
+                            const checkOutInput = document.getElementById('checkOutDate');
+                            const priceContainer = document.getElementById('priceCalculationContainer');
+                            const nightsDisplay = document.getElementById('numberOfNights');
+                            const totalDisplay = document.getElementById('totalPriceDisplay');
+                            const basePrice = parseInt(document.getElementById('basePrice').innerText.replace(/,/g, ''));
+
+                            function calculatePrice() {
+                                if(checkInInput.value && checkOutInput.value) {
+                                    const start = new Date(checkInInput.value);
+                                    const end = new Date(checkOutInput.value);
+                                    
+                                    if(end > start) {
+                                        const diffTime = Math.abs(end - start);
+                                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                        
+                                        priceContainer.classList.remove('d-none');
+                                        nightsDisplay.innerText = diffDays;
+                                        totalDisplay.innerText = (diffDays * basePrice).toLocaleString("en-IN");
+                                    } else {
+                                        priceContainer.classList.add('d-none');
+                                    }
+                                }
+                            }
+
+                            checkInInput.addEventListener('change', () => {
+                                checkOutInput.setAttribute('min', checkInInput.value);
+                                calculatePrice();
+                            });
+                            checkOutInput.addEventListener('change', calculatePrice);
+                            
+                            // Set minimum dates
+                            const today = new Date().toISOString().split('T')[0];
+                            checkInInput.setAttribute('min', today);
+                            checkOutInput.setAttribute('min', today);
+                        });
+                    </script>
                 <% } %>
             </div>
         </div>

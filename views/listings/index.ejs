@@ -6,8 +6,13 @@
         align-items: center;
         width: 100%;
         margin-top: 0.5rem;
-        flex-wrap: nowrap;
-        gap: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        #filters-wrapper {
+            gap: 1rem;
+        }
     }
     #filters-container {
         display: flex;
@@ -60,6 +65,7 @@
         font-size: 0.85rem;
         font-weight: 500;
         margin: 0;
+        color: var(--text-color);
     }
 
     .tax-info{
@@ -67,17 +73,33 @@
     }
 
     .tax-toggle{
-        border:1px solid #ddd;
+        border:1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
         border-radius: 1rem;
         height: 3.25rem;
         padding: 1rem;
-        margin-left: auto;
         display: flex;
         align-items: center;
         white-space: nowrap;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
+        margin: 0.5rem 0;
+    }
+    @media (max-width: 576px) {
+        .tax-toggle {
+            width: 100%;
+            justify-content: space-between;
+            margin-left: 0;
+        }
+        .price-filter {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .price-filter button {
+            width: 100% !important;
+            justify-content: center;
+        }
     }
     
     .listing-card {
@@ -111,6 +133,24 @@
         font-weight: 700;
         font-size: 1.05rem;
     }
+    .wishlist-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.2s ease;
+        text-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .wishlist-btn:hover {
+        transform: scale(1.2);
+    }
+    .wishlist-btn .fa-solid {
+        color: #e34949;
+    }
 </style>
 
     <div id="filters-wrapper">
@@ -133,13 +173,44 @@
             %>
             
             <% for(let cat of categories) { %>
-                <a href="/listings?category=<%= encodeURIComponent(cat.name) %>" class="filter-link">
+                <%
+                   let catQuery = `?category=${encodeURIComponent(cat.name)}`;
+                   if (typeof searchQuery !== 'undefined' && searchQuery) catQuery += `&q=${encodeURIComponent(searchQuery)}`;
+                   if (typeof minPrice !== 'undefined' && minPrice) catQuery += `&minPrice=${minPrice}`;
+                   if (typeof maxPrice !== 'undefined' && maxPrice) catQuery += `&maxPrice=${maxPrice}`;
+                %>
+                <a href="/listings<%= catQuery %>" class="filter-link">
                     <div class="filter <%= typeof activeCategory !== 'undefined' && activeCategory === cat.name ? 'active' : '' %>">
                         <div><i class="<%= cat.icon.includes('fa-brands') ? cat.icon : 'fa-solid ' + cat.icon %>"></i></div>
                         <p><%= cat.name %></p>
                     </div>
                 </a>
             <% } %>
+            </div>
+        </div>
+
+        <div class="price-filter dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" style="border-radius: 1rem; height: 3.25rem; background-color: var(--card-bg); color: var(--text-color); border-color: var(--border-color);" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <i class="fa-solid fa-filter me-2"></i> Price
+            </button>
+            <div class="dropdown-menu p-3 shadow-lg" style="width: 250px; border-radius: 1rem;">
+                <form action="/listings" method="GET">
+                    <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                        <input type="hidden" name="q" value="<%= searchQuery %>">
+                    <% } %>
+                    <% if (typeof activeCategory !== 'undefined' && activeCategory) { %>
+                        <input type="hidden" name="category" value="<%= activeCategory %>">
+                    <% } %>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size: 0.9rem; font-weight: 600;">Min Price (₹)</label>
+                        <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="e.g. 1000" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size: 0.9rem; font-weight: 600;">Max Price (₹)</label>
+                        <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="e.g. 50000" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100" style="border-radius: 0.5rem; font-weight: 600;">Apply Filter</button>
+                </form>
             </div>
         </div>
 
@@ -156,10 +227,15 @@
     <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 mt-2">
         <% for(let listing of allListings){ %>
             <div class="col">
-                <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+                <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
                     <div class="card listing-card border-0 h-100">
                         <div class="card-img-container">
                             <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                            <% if(currUser) { %>
+                                <button class="wishlist-btn" onclick="toggleWishlist(event, '<%= listing._id %>')">
+                                    <i class="<%= currUser.wishlist && currUser.wishlist.includes(listing._id) ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
+                                </button>
+                            <% } %>
                         </div>
                         <div class="card-body px-1 py-3">
                             <h5 class="card-title-location text-truncate mb-1"><%= listing.location %>, <%= listing.country %></h5>

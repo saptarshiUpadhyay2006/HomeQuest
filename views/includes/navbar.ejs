@@ -1,9 +1,9 @@
 <style>
   .custom-navbar {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--navbar-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     padding: 0.8rem 0;
@@ -25,7 +25,7 @@
   }
   .nav-link {
     font-weight: 500;
-    color: #4a4a4a !important;
+    color: var(--text-color) !important;
     position: relative;
     padding: 0.5rem 1rem !important;
     transition: color 0.3s ease;
@@ -103,8 +103,8 @@
   
   /* User Menu Dropdown Styles */
   .user-menu-btn {
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 30px;
     padding: 0.3rem 0.5rem 0.3rem 0.8rem;
     transition: all 0.3s ease;
@@ -116,7 +116,7 @@
   }
   .user-avatar i {
     font-size: 1.8rem;
-    color: #777;
+    color: var(--text-muted);
     transition: color 0.3s ease;
   }
   .user-menu-btn:hover .user-avatar i {
@@ -124,9 +124,9 @@
   }
   
   .custom-dropdown {
-    background-color: #ffffff !important;
+    background-color: var(--card-bg) !important;
     border-radius: 14px;
-    border: 1px solid rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
     padding: 0.5rem 0;
     min-width: 240px;
     animation: fadeInDropdown 0.2s ease-out;
@@ -142,14 +142,14 @@
   .custom-dropdown .dropdown-item {
     padding: 0.6rem 1.2rem;
     transition: background-color 0.2s ease;
-    color: #333;
+    color: var(--text-color);
     font-size: 0.95rem;
   }
   .custom-dropdown .dropdown-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(227, 73, 73, 0.1);
   }
   .custom-dropdown .dropdown-item.fw-bold {
-    color: #222;
+    color: var(--text-color);
   }
   
   @media (max-width: 768px) {
@@ -162,7 +162,7 @@
       padding: 0.5rem 0;
     }
     .navbar-collapse {
-      background-color: #ffffff;
+      background-color: var(--card-bg);
       padding: 1rem;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -183,6 +183,55 @@
       box-shadow: none !important;
       padding: 0;
     }
+  }
+
+  /* Theme Switcher */
+  .theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    margin-right: 1.5rem;
+  }
+  .theme-switch {
+    display: inline-block;
+    height: 26px;
+    position: relative;
+    width: 50px;
+  }
+  .theme-switch input {
+    display:none;
+  }
+  .slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 18px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 18px;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #e34949;
+  }
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  .theme-icon {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-right: 8px;
   }
 </style>
 
@@ -210,6 +259,15 @@
       </div>
 
       <form class="d-flex mx-auto search-container" role="search" method="GET" action="/listings">
+        <% if (typeof activeCategory !== 'undefined' && activeCategory) { %>
+            <input type="hidden" name="category" value="<%= activeCategory %>">
+        <% } %>
+        <% if (typeof minPrice !== 'undefined' && minPrice) { %>
+            <input type="hidden" name="minPrice" value="<%= minPrice %>">
+        <% } %>
+        <% if (typeof maxPrice !== 'undefined' && maxPrice) { %>
+            <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+        <% } %>
         <div class="position-relative flex-grow-1">
           <input
             class="form-control search-inp"
@@ -226,7 +284,14 @@
       </form>
 
       <div class="navbar-nav ms-auto align-items-center mt-3 mt-md-0 flex-row justify-content-center">
-        <a class="nav-link fw-bold me-3 d-none d-md-block" style="font-size: 0.95rem; color: #222 !important;" href="/listings/new">Add Your Home</a>
+        <div class="theme-switch-wrapper me-3">
+          <i class="fa-solid fa-moon theme-icon"></i>
+          <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+          </label>
+        </div>
+        <a class="nav-link fw-bold me-3 d-none d-md-block" style="font-size: 0.95rem; color: var(--text-color) !important;" href="/listings/new">Add Your Home</a>
         
         <div class="dropdown">
           <button class="user-menu-btn d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -243,6 +308,8 @@
               <li><a class="dropdown-item d-md-none" href="/listings/new">Add Your Home</a></li>
             <% } else { %>
               <li><span class="dropdown-item-text text-muted" style="font-size: 0.85rem;">Welcome back!</span></li>
+              <li><a class="dropdown-item fw-bold" href="/profile">My Profile</a></li>
+              <li><a class="dropdown-item fw-bold" href="/bookings">My Bookings</a></li>
               <li><a class="dropdown-item fw-bold" href="/listings/new">Add Your Home</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item text-danger fw-bold" href="/logout">Log out</a></li>
