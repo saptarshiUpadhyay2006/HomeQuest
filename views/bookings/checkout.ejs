@@ -1,0 +1,90 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow-lg p-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+                <h2 class="mb-4">Confirming Your Stay</h2>
+                <div class="listing-details mb-4">
+                    <img src="<%= listing.image.url %>" class="img-fluid rounded mb-3" style="max-height: 200px; object-fit: cover; width: 100%;" alt="<%= listing.title %>">
+                    <h4><%= listing.title %></h4>
+                    <p class="text-muted"><%= listing.location %>, <%= listing.country %></p>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5">Total Amount:</span>
+                        <span class="h4 text-primary">₹<%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                    </div>
+                </div>
+                
+                <p class="mb-4">Please complete the payment to finalize your booking.</p>
+                
+                <button id="rzp-button1" class="btn btn-primary btn-lg w-100 mb-3">Pay Now</button>
+                <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary w-100">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        "key": "<%= key_id %>", 
+        "amount": "<%= order.amount %>", 
+        "currency": "INR",
+        "name": "HomeQuest",
+        "description": "Booking for <%= listing.title %>",
+        "image": "/images/logo.png", // Replace with your actual logo
+        "order_id": "<%= order.id %>", 
+        "handler": function (response){
+            // Success handler
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/listings/<%= listing._id %>/bookings/verify/<%= booking._id %>';
+            
+            const orderIdInput = document.createElement('input');
+            orderIdInput.type = 'hidden';
+            orderIdInput.name = 'razorpay_order_id';
+            orderIdInput.value = response.razorpay_order_id;
+            form.appendChild(orderIdInput);
+            
+            const paymentIdInput = document.createElement('input');
+            paymentIdInput.type = 'hidden';
+            paymentIdInput.name = 'razorpay_payment_id';
+            paymentIdInput.value = response.razorpay_payment_id;
+            form.appendChild(paymentIdInput);
+            
+            const signatureInput = document.createElement('input');
+            signatureInput.type = 'hidden';
+            signatureInput.name = 'razorpay_signature';
+            signatureInput.value = response.razorpay_signature;
+            form.appendChild(signatureInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        },
+        "prefill": {
+            "name": "<%= user.username %>",
+            "email": "<%= user.email %>",
+        },
+        "theme": {
+            "color": "#fe424d" // Wanderlust primary color
+        },
+        "modal": {
+            "ondismiss": function(){
+                console.log('Checkout modal closed');
+            }
+        }
+    };
+    const rzp1 = new Razorpay(options);
+    
+    // Auto-open the modal on page load
+    window.onload = function() {
+        rzp1.open();
+    };
+
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>

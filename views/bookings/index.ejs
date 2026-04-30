@@ -17,13 +17,15 @@
         object-fit: cover;
     }
     .status-badge {
-        background-color: #e34949;
         color: white;
         padding: 0.3rem 0.8rem;
         border-radius: 20px;
         font-size: 0.85rem;
         font-weight: bold;
     }
+    .status-badge.paid { background-color: #2ecc71; }
+    .status-badge.pending { background-color: #f39c12; }
+    .status-badge.failed { background-color: #e74c3c; }
     .detail-icon {
         color: #777;
         width: 20px;
@@ -44,7 +46,12 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title fw-bold mb-0 text-truncate" style="max-width: 70%;"><%= booking.listing.title %></h5>
-                                    <span class="status-badge">Confirmed</span>
+                                    <% 
+                                        let status = booking.paymentStatus || 'pending';
+                                    %>
+                                    <span class="status-badge <%= status %>">
+                                        <%= status.charAt(0).toUpperCase() + status.slice(1) %>
+                                    </span>
                                 </div>
                                 <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot detail-icon me-1"></i> <%= booking.listing.location %>, <%= booking.listing.country %></p>
                                 

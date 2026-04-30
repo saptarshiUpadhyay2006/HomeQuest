@@ -24,6 +24,17 @@ const bookingSchema = new Schema({
         type: Number,
         required: true
     },
+    paymentStatus: {
+        type: String,
+        enum: ["pending", "paid", "failed"],
+        default: "pending"
+    },
+    razorpayOrderId: {
+        type: String
+    },
+    razorpayPaymentId: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: Date.now
