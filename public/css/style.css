@@ -41,7 +41,7 @@ body{
     font-family: "Outfit", sans-serif !important;
     display: flex;
     flex-direction:column ;
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--bg-color) !important;
     color: var(--text-color) !important;
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -225,7 +225,7 @@ footer {
 }
 
 /* Map */
-#map { height: 400px; width:80vh; }
+/* Removed fixed sizing to allow page-specific overrides */
 
 /* Skeleton Loading */
 .skeleton {

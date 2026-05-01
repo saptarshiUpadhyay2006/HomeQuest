@@ -6,6 +6,11 @@ const map = new mapboxgl.Map({
     zoom: 9,
 });
 
+// Fix for maps not appearing correctly on mobile/resized containers
+map.on('load', () => {
+    map.resize();
+});
+
 
 const marker=new mapboxgl.Marker({color:"red"})
     .setLngLat(listing.geometry.coordinates)
