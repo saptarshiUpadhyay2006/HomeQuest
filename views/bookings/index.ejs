@@ -26,6 +26,7 @@
     .status-badge.paid { background-color: #2ecc71; }
     .status-badge.pending { background-color: #f39c12; }
     .status-badge.failed { background-color: #e74c3c; }
+    .status-badge.cancelled { background-color: #95a5a6; }
     .detail-icon {
         color: #777;
         width: 20px;
@@ -80,7 +81,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="/listings/<%= booking.listing._id %>" class="stretched-link"></a>
+                            <a href="/bookings/<%= booking._id %>" class="stretched-link"></a>
                         <% } else { %>
                             <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
                                 <i class="fa-solid fa-house-circle-xmark text-muted mb-3" style="font-size: 3rem;"></i>

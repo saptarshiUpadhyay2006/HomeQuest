@@ -1,0 +1,232 @@
+<% layout("/layouts/boilerplate") -%>
+<style>
+    .dashboard-container {
+        padding-top: 2rem;
+        padding-bottom: 5rem;
+    }
+    .kpi-card {
+        border: none;
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        background: #fff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    .kpi-card:hover {
+        transform: translateY(-5px);
+    }
+    .kpi-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .icon-earnings { background: #e8f5e9; color: #2e7d32; }
+    .icon-bookings { background: #e3f2fd; color: #1565c0; }
+    .icon-listings { background: #fff3e0; color: #ef6c00; }
+    
+    .kpi-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #222;
+        margin-bottom: 0.2rem;
+    }
+    .kpi-label {
+        color: #777;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .dashboard-section {
+        background: #fff;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.04);
+        margin-bottom: 2rem;
+    }
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .booking-row {
+        padding: 1rem;
+        border-radius: 1rem;
+        transition: background 0.2s;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .booking-row:hover {
+        background: #fcfcfc;
+    }
+    .guest-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #555;
+    }
+    .status-pill {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+    }
+    .status-paid { background: #d1f2eb; color: #16a085; }
+    .status-pending { background: #fef5e7; color: #d68910; }
+    .status-cancelled { background: #f4f6f7; color: #7f8c8d; }
+
+    .calendar-card {
+        border-left: 4px solid #fe424d;
+        background: #fff;
+        padding: 1rem;
+        border-radius: 0.8rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container dashboard-container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold" style="font-family: 'Plus Jakarta Sans', sans-serif;">Host Dashboard</h1>
+            <p class="text-muted mb-0">Welcome back! Here's how your properties are performing.</p>
+        </div>
+        <a href="/listings/new" class="btn btn-dark px-4 py-2" style="border-radius: 30px; font-weight: 600;">
+            <i class="fa-solid fa-plus me-2"></i> Add New Listing
+        </a>
+    </div>
+
+    <!-- KPI Summary -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="kpi-card">
+                <div class="kpi-icon icon-earnings">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div class="kpi-value">₹<%= totalEarnings.toLocaleString("en-IN") %></div>
+                <div class="kpi-label">Total Earnings</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="kpi-card">
+                <div class="kpi-icon icon-bookings">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div class="kpi-value"><%= totalBookings %></div>
+                <div class="kpi-label">Total Paid Bookings</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="kpi-card">
+                <div class="kpi-icon icon-listings">
+                    <i class="fa-solid fa-house-chimney"></i>
+                </div>
+                <div class="kpi-value"><%= listings.length %></div>
+                <div class="kpi-label">Active Listings</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Manage Bookings -->
+        <div class="col-lg-8">
+            <div class="dashboard-section">
+                <h4 class="section-title"><i class="fa-solid fa-list-check text-primary"></i> Recent Bookings</h4>
+                
+                <% if (bookings && bookings.length > 0) { %>
+                    <div class="booking-list">
+                        <% for(let booking of bookings) { %>
+                            <div class="booking-row d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="guest-avatar">
+                                        <%= booking.user.username.charAt(0).toUpperCase() %>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold"><%= booking.user.username %></div>
+                                        <div class="small text-muted"><%= booking.listing ? booking.listing.title : 'Deleted Listing' %></div>
+                                    </div>
+                                </div>
+                                <div class="text-center px-3 d-none d-md-block">
+                                    <div class="small fw-bold"><%= booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - <%= booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></div>
+                                    <div class="small text-muted">₹<%= booking.totalPrice.toLocaleString("en-IN") %></div>
+                                </div>
+                                <div>
+                                    <span class="status-pill status-<%= booking.paymentStatus %>">
+                                        <%= booking.paymentStatus %>
+                                    </span>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-5">
+                        <p class="text-muted">No bookings received yet.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Occupancy Calendar / Upcoming -->
+        <div class="col-lg-4">
+            <div class="dashboard-section">
+                <h4 class="section-title"><i class="fa-solid fa-calendar-day text-danger"></i> Upcoming Stays</h4>
+                
+                <% if (upcomingBookings && upcomingBookings.length > 0) { %>
+                    <% for(let booking of upcomingBookings) { %>
+                        <div class="calendar-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="fw-bold" style="font-size: 0.95rem;"><%= booking.listing.title %></div>
+                                <div class="badge bg-light text-dark"><%= Math.ceil((booking.checkIn - new Date()) / (1000 * 60 * 60 * 24)) %> days to go</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 small text-muted">
+                                <i class="fa-regular fa-calendar"></i>
+                                <%= booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - <%= booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 small text-muted mt-1">
+                                <i class="fa-regular fa-user"></i>
+                                Guest: <%= booking.user.username %>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <div class="text-center py-4">
+                        <p class="text-muted small">No upcoming stays scheduled.</p>
+                    </div>
+                <% } %>
+
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="fw-bold mb-3">Your Top Listings</h6>
+                    <% 
+                        // Simple top listings logic: sort by number of bookings
+                        let listingStats = {};
+                        bookings.filter(b => b.paymentStatus === 'paid').forEach(b => {
+                            if(b.listing) {
+                                listingStats[b.listing._id] = (listingStats[b.listing._id] || 0) + 1;
+                            }
+                        });
+                        let topListings = listings.sort((a,b) => (listingStats[b._id] || 0) - (listingStats[a._id] || 0)).slice(0, 3);
+                    %>
+                    <% for(let list of topListings) { %>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <img src="<%= (list.images && list.images.length > 0) ? list.images[0].url : '/images/placeholder.jpg' %>" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                            <div class="text-truncate" style="font-size: 0.85rem; max-width: 150px;"><%= list.title %></div>
+                            <div class="ms-auto badge bg-primary rounded-pill"><%= listingStats[list._id] || 0 %></div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

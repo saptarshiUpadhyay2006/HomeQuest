@@ -1,0 +1,184 @@
+<% layout("/layouts/boilerplate") -%>
+<style>
+    .booking-detail-card {
+        border-radius: 1.5rem;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+        background: #fff;
+    }
+    .booking-hero-img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+    }
+    .status-banner {
+        padding: 1rem;
+        text-align: center;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .status-banner.paid { background-color: #d1f2eb; color: #16a085; }
+    .status-banner.pending { background-color: #fef5e7; color: #d68910; }
+    .status-banner.failed { background-color: #fdedec; color: #c0392b; }
+    .status-banner.cancelled { background-color: #f4f6f7; color: #7f8c8d; }
+    
+    .info-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #888;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+    .price-total {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #222;
+    }
+    .btn-cancel {
+        border-radius: 12px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-cancel:hover {
+        background-color: #c0392b;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .booking-hero-img {
+            height: 250px;
+        }
+        .price-total {
+            font-size: 1.5rem;
+        }
+        .info-value {
+            font-size: 1rem;
+        }
+        .btn-cancel {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+        }
+        .action-buttons {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px !important;
+        }
+        .footer-container {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 20px;
+        }
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/bookings" class="text-decoration-none text-muted">My Bookings</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Booking Details</li>
+                </ol>
+            </nav>
+
+            <div class="card booking-detail-card">
+                <% 
+                    let status = booking.paymentStatus || 'pending';
+                %>
+                <div class="status-banner <%= status %>">
+                    <% if(status === 'paid') { %>
+                        <i class="fa-solid fa-circle-check me-2"></i> Confirmed Booking
+                    <% } else if(status === 'cancelled') { %>
+                        <i class="fa-solid fa-circle-xmark me-2"></i> Cancelled
+                    <% } else { %>
+                        <%= status.charAt(0).toUpperCase() + status.slice(1) %>
+                    <% } %>
+                </div>
+
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <% if (booking.listing) { %>
+                            <img src="<%= (booking.listing.images && booking.listing.images.length > 0) ? booking.listing.images[0].url : '/images/placeholder.jpg' %>" class="booking-hero-img" alt="<%= booking.listing.title %>">
+                        <% } else { %>
+                            <div class="bg-light d-flex align-items-center justify-content-center h-100" style="min-height: 350px;">
+                                <i class="fa-solid fa-house-circle-xmark text-muted" style="font-size: 4rem;"></i>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body p-4 p-lg-5 h-100 d-flex flex-column">
+                            <% if (booking.listing) { %>
+                                <h2 class="fw-bold mb-1"><%= booking.listing.title %></h2>
+                                <p class="text-muted mb-4"><i class="fa-solid fa-location-dot me-2"></i><%= booking.listing.location %>, <%= booking.listing.country %></p>
+                            <% } else { %>
+                                <h2 class="fw-bold mb-1 text-muted">Listing Deleted</h2>
+                                <p class="text-muted mb-4">This listing is no longer available.</p>
+                            <% } %>
+
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="info-label">Check-in</div>
+                                    <div class="info-value"><%= booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-label">Check-out</div>
+                                    <div class="info-value"><%= booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="info-label">Booking ID</div>
+                                <div class="info-value small" style="font-family: monospace;"><%= booking._id %></div>
+                            </div>
+
+                            <% if(booking.razorpayPaymentId) { %>
+                                <div class="mb-4">
+                                    <div class="info-label">Payment ID</div>
+                                    <div class="info-value small" style="font-family: monospace;"><%= booking.razorpayPaymentId %></div>
+                                </div>
+                            <% } %>
+
+                            <div class="mt-auto pt-4 border-top">
+                                <div class="d-flex justify-content-between align-items-end footer-container">
+                                    <div>
+                                        <div class="info-label">Total Amount</div>
+                                        <div class="price-total">₹<%= booking.totalPrice.toLocaleString("en-IN") %></div>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2 action-buttons">
+                                        <% if(status === 'paid') { %>
+                                            <a href="/bookings/<%= booking._id %>/receipt" class="btn btn-outline-dark btn-cancel">
+                                                <i class="fa-solid fa-file-invoice me-1"></i> Receipt
+                                            </a>
+                                            <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?')" class="w-100">
+                                                <button class="btn btn-outline-danger btn-cancel">Cancel Booking</button>
+                                            </form>
+                                        <% } else if(status === 'pending') { %>
+                                            <a href="/bookings/<%= booking._id %>/checkout" class="btn btn-primary btn-cancel" style="background-color: #fe424d; border: none; color: white;">Pay Now</a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="/bookings" class="btn btn-link text-dark text-decoration-none fw-bold">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Back to My Bookings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

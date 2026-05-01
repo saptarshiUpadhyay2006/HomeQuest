@@ -1,4 +1,5 @@
 const Listing=require("../models/listing");
+const Booking=require("../models/booking");
 const mbxGeoCoding= require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken=process.env.MAP_TOKEN;
 const geocodingClient=mbxGeoCoding({accessToken:mapToken});
@@ -121,4 +122,32 @@ module.exports.index = async (req, res) => {
         maxPrice: maxPrice || ""
     });
   };
+
+module.exports.renderDashboard = async (req, res) => {
+    const listings = await Listing.find({ owner: req.user._id });
+    const listingIds = listings.map(l => l._id);
+
+    const bookings = await Booking.find({ listing: { $in: listingIds } })
+        .populate("listing")
+        .populate("user")
+        .sort({ createdAt: -1 });
+
+    const paidBookings = bookings.filter(b => b.paymentStatus === "paid");
+    const totalEarnings = paidBookings.reduce((sum, b) => sum + b.totalPrice, 0);
+    const totalBookings = paidBookings.length;
+
+    // Sort upcoming bookings by check-in date
+    const upcomingBookings = paidBookings
+        .filter(b => b.checkOut >= new Date())
+        .sort((a, b) => a.checkIn - b.checkIn);
+
+    res.render("listings/dashboard.ejs", { 
+        listings, 
+        bookings, 
+        totalEarnings, 
+        totalBookings,
+        upcomingBookings 
+    });
+};
+
   

@@ -30,6 +30,9 @@ router
         wrapAsync(listingController.createListing)
     );
 
+// Host Dashboard
+router.get("/dashboard", isLoggedIn, wrapAsync(listingController.renderDashboard));
+
 //new route
 router.get("/new",isLoggedIn,listingController.renderNewForm);
 
