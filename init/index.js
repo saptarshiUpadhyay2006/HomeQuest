@@ -1,28 +1,58 @@
-const mongoose=require("mongoose");
-const initData=require("./data.js");
-const Listing=require("../models/listing.js");
+const mongoose = require("mongoose");
+const initData = require("./data.js");
+const Listing = require("../models/listing.js");
+const path = require("path");
+require('dotenv').config({ path: path.join(__dirname, "../.env") });
 
-const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL;
 
-main().then(()=>{
+main().then(() => {
     console.log("connected to DB");
+    initDB();
 })
-    .catch((err)=>{
+    .catch((err) => {
         console.log(err);
     })
 
-async function main(){
-    await mongoose.connect(MONGO_URL);
+async function main() {
+    await mongoose.connect(dbUrl);
 }
 
-const initDB=async()=>{
+const mbxGeoCoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const geocodingClient = mbxGeoCoding({ accessToken: process.env.MAP_TOKEN });
+
+const initDB = async () => {
     await Listing.deleteMany({});
-    initData.data=initData.data.map((obj)=>({
-        ...obj,
-        owner: "68976b959f9033f9933f335b"
-    }));
-    await Listing.insertMany(initData.data);
-    console.log("data was initialized");
-}
+    
+    // Geocode each listing one by one
+    const updatedData = [];
+    for (let obj of initData.data) {
+        let response = await geocodingClient.forwardGeocode({
+            query: `${obj.location}, ${obj.country}`,
+            limit: 1
+        }).send();
 
-initDB();
+        let coordinates = [0, 0];
+        if (response.body.features.length > 0) {
+            coordinates = response.body.features[0].geometry.coordinates;
+        }
+
+        const allAmenities = ["Wifi", "Pool", "AC", "Kitchen", "Parking", "Gym", "TV", "Workspace"];
+        const randomAmenities = allAmenities
+            .sort(() => 0.5 - Math.random())
+            .slice(0, Math.floor(Math.random() * 4) + 2);
+
+        updatedData.push({
+            ...obj,
+            owner: "69f2df3847322f84ee1c117c",
+            geometry: {
+                type: "Point",
+                coordinates: coordinates
+            },
+            amenities: randomAmenities
+        });
+    }
+
+    await Listing.insertMany(updatedData);
+    console.log("data was initialized with real coordinates");
+}

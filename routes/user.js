@@ -19,9 +19,15 @@ router.route("/login")
         failureFlash:true}),
         userController.login);
 
+const multer = require('multer');
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
+
 router.get("/logout",userController.logout);
 
 router.get("/profile", isLoggedIn, wrapAsync(userController.renderProfile));
+router.get("/profile/edit", isLoggedIn, wrapAsync(userController.renderEditProfileForm));
+router.put("/profile", isLoggedIn, upload.single("avatar"), wrapAsync(userController.updateProfile));
 router.post("/wishlist/:id", isLoggedIn, wrapAsync(userController.toggleWishlist));
 
 module.exports=router;

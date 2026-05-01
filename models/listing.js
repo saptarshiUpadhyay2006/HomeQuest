@@ -10,20 +10,22 @@ const listingSchema=new Schema({
         required:true,
     },
     description:String,
-    image:{
-        url:String,
-        filename:String,
-    },
-    price:Number,
-    location:String,
-    country:String,
+    images: [{
+        url: String,
+        filename: String,
+    }],
+    price: Number,
+    weekendPrice: Number,
+    location: String,
+    country: String,
     category: {
         type: String,
         enum: categories
     },
-    reviews:[{
-        type:Schema.Types.ObjectId,
-        ref:"Review",
+    amenities: [String],
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: "Review",
     }],
     owner: {
         type:Schema.Types.ObjectId,

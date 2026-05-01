@@ -16,13 +16,13 @@ router
     .get(wrapAsync(listingController.index))
     .post(
         isLoggedIn,
-        upload.single('listing[image]'),
+        upload.array('listing[images]', 5),
         (req, res, next) => {
-            if (req.file) {
-              req.body.listing.image = {
-                url: req.file.path,
-                filename: req.file.filename,
-              };
+            if (req.files) {
+              req.body.listing.images = req.files.map(f => ({
+                url: f.path,
+                filename: f.filename
+              }));
             }
             next();
           },
@@ -38,13 +38,13 @@ router
     .get(wrapAsync(listingController.showListing))
     .put(isLoggedIn,
         isOwner,
-        upload.single("listing[image]"),
+        upload.array("listing[images]", 5),
         (req, res, next) => {
-        if (req.file) {
-            req.body.listing.image = {
-            url: req.file.path,
-            filename: req.file.filename,
-            };
+        if (req.files && req.files.length > 0) {
+            req.body.listing.images = req.files.map(f => ({
+                url: f.path,
+                filename: f.filename
+            }));
         }
         next();
         },

@@ -7,6 +7,11 @@ const userSchema=new Schema({
         type:String,
         required:true
     },
+    avatar: {
+        url: String,
+        filename: String,
+    },
+    bio: String,
     wishlist: [{
         type: Schema.Types.ObjectId,
         ref: "listing"

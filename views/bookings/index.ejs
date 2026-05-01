@@ -42,7 +42,7 @@
                 <div class="col">
                     <div class="card booking-card h-100">
                         <% if (booking.listing) { %>
-                            <img src="<%= booking.listing.image.url %>" class="booking-img" alt="<%= booking.listing.title %>">
+                            <img src="<%= (booking.listing.images && booking.listing.images.length > 0) ? booking.listing.images[0].url : '/images/placeholder.jpg' %>" class="booking-img" alt="<%= booking.listing.title %>">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title fw-bold mb-0 text-truncate" style="max-width: 70%;"><%= booking.listing.title %></h5>

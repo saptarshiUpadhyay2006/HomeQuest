@@ -56,6 +56,25 @@ module.exports.renderProfile = async (req, res) => {
     res.render("users/profile.ejs", { user, listings, bookings });
 };
 
+module.exports.renderEditProfileForm = async (req, res) => {
+    res.render("users/editProfile.ejs", { user: req.user });
+};
+
+module.exports.updateProfile = async (req, res) => {
+    let { bio } = req.body;
+    let user = await User.findByIdAndUpdate(req.user._id, { bio });
+    
+    if (typeof req.file !== "undefined") {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        user.avatar = { url, filename };
+        await user.save();
+    }
+    
+    req.flash("success", "Profile updated successfully!");
+    res.redirect("/profile");
+};
+
 module.exports.toggleWishlist = async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(req.user._id);

@@ -29,35 +29,58 @@
             <div class="invalid-feedback">Please enter a short description</div>
         </div>
         <div class="mb-3">
-            <label class="form-label">Current Image:</label><br>
-            <img src="<%= listing.image.url %>" alt="Current Image" width="200" class="mb-2">
+            <label class="form-label">Current Images:</label><br>
+            <div class="row">
+                <% for(let img of listing.images) { %>
+                    <div class="col-md-3 mb-2">
+                        <img src="<%= img.url %>" alt="Listing Image" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                    </div>
+                <% } %>
+            </div>
             <br>
-            <label for="image" class="form-label">Upload New Image:</label>
-            <input name="listing[image]" 
+            <label for="image" class="form-label">Upload New Images:</label>
+            <input name="listing[images]" 
                    type="file"
-                   class="form-control">
-        </div>            
+                   class="form-control"
+                   multiple>
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label d-block">Amenities</label>
+            <div class="row g-3">
+                <% const amenitiesList = ["Wifi", "Pool", "AC", "Kitchen", "Parking", "Gym", "TV", "Workspace"]; %>
+                <% for(let amenity of amenitiesList) { %>
+                    <div class="col-6 col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="listing[amenities][]" value="<%= amenity %>" id="amenity-<%= amenity %>"
+                            <%= listing.amenities && listing.amenities.includes(amenity) ? 'checked' : '' %>>
+                            <label class="form-check-label" for="amenity-<%= amenity %>">
+                                <%= amenity %>
+                            </label>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
         <div class="row">
-        <div class="mb-3 col-md-4"> 
-            <label for="price" 
-            class="form-label">Price:</label>
-            <input name="listing[price]" 
-            value="<%= listing.price %>"
-            type="number"
-            class="form-control"
-            required>
-            <div class="invalid-feedback">Price should be valid</div>
+            <div class="mb-3 col-md-6">
+                <label for="price" class="form-label">Price (Weekday):</label>
+                <input name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" required>
+                <div class="invalid-feedback">Price should be valid</div>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="weekendPrice" class="form-label">Price (Weekend):</label>
+                <input name="listing[weekendPrice]" value="<%= listing.weekendPrice %>" type="number" class="form-control" required>
+                <div class="invalid-feedback">Weekend price should be valid</div>
+            </div>
         </div>
-        <div class="mb-3 col-md-4"> 
-            <label for="country" 
-            class="form-label">Country:</label>
-            <input name="listing[country]" 
-            value="<%= listing.country %>" type="text"
-            class="form-control"
-            required>
-            <div class="invalid-feedback">Country name should be valid</div>
-        </div>
-        <div class="mb-3 col-md-4">
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="country" class="form-label">Country:</label>
+                <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required>
+                <div class="invalid-feedback">Country name should be valid</div>
+            </div>
+            <div class="mb-3 col-md-6">
             <label for="category" class="form-label">Category</label>
             <select name="listing[category]" class="form-select" required>
                 <% const categories = ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing pools", "Camping", "Farms", "Arctic", "Domes", "Cruise"]; %>

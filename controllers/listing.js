@@ -32,10 +32,6 @@ module.exports.createListing = async (req, res, next) => {
 
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
-    newListing.image = {
-        url: req.file.path,
-        filename: req.file.filename
-    };
 
     if (response.body.features.length > 0) {
         newListing.geometry = {
@@ -56,21 +52,28 @@ module.exports.renderEditForm=async (req,res)=>{
         req.flash("error","Listing you requested does not exist!");
         res.redirect("/listings");
     }
-    let originalImageUrl=listing.image.url;
-    originalImageUrl=originalImageUrl.replace("/upload","/upload/w_250");
+    let originalImageUrl=listing.images && listing.images.length > 0 ? listing.images[0].url : "";
+    if (originalImageUrl) {
+        originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    }
     res.render("listings/edit.ejs",{listing});
 };
 
-module.exports.updateListing=async (req,res)=>{
-    let {id}=req.params;
-    let listing=await Listing.findByIdAndUpdate(id,{...req.body.listing});
-    if(typeof req.file !=="undefined"){
-    let url=req.file.path;
-    let filename=req.file.filename;
-    listing.image={url,filename};
-    await listing.save();
+module.exports.updateListing = async (req, res) => {
+    let { id } = req.params;
+    // We handle images separately to allow appending
+    let { images, ...otherData } = req.body.listing;
+    let listing = await Listing.findByIdAndUpdate(id, { ...otherData }, { new: true });
+
+    if (typeof req.files !== "undefined" && req.files.length > 0) {
+        let newImages = req.files.map(f => ({
+            url: f.path,
+            filename: f.filename
+        }));
+        listing.images.push(...newImages);
+        await listing.save();
     }
-    req.flash("success","listing updated!");
+    req.flash("success", "Listing updated!");
     res.redirect(`/listings/${id}`);
 };
 
