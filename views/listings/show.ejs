@@ -1,4 +1,30 @@
 <% layout("/layouts/boilerplate") -%>
+<% 
+    const title = listing.title + " | HomeQuest";
+    const description = listing.description.substring(0, 160);
+    const ogImage = listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image ? listing.image.url : "/logo.png");
+    const canonicalUrl = "/listings/" + listing._id;
+%>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Accommodation",
+  "name": "<%= listing.title %>",
+  "description": "<%= listing.description %>",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "<%= listing.location %>",
+    "addressCountry": "<%= listing.country %>"
+  },
+  "image": "<%= ogImage %>",
+  "offers": {
+    "@type": "Offer",
+    "price": "<%= listing.price %>",
+    "priceCurrency": "INR"
+  }
+}
+</script>
     <script>
         const mapToken = "<%=process.env.MAP_TOKEN%>";
     </script>

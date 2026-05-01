@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Quest</title>
+    <title><%= typeof title !== 'undefined' ? title : 'HomeQuest - Discover Your Perfect Stay' %></title>
+    <meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.' %>">
+    
+    <!-- SEO Keywords -->
+    <meta name="keywords" content="vacation rentals, holiday homes, HomeQuest, travel, luxury stays, unique stays, booking">
+    <meta name="author" content="HomeQuest Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://homequest-spuk.vercel.app/">
+    <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'HomeQuest - Discover Your Perfect Stay' %>">
+    <meta property="og:description" content="<%= typeof description !== 'undefined' ? description : 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.' %>">
+    <meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/logo.png' %>">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://homequest-spuk.vercel.app/">
+    <meta property="twitter:title" content="<%= typeof title !== 'undefined' ? title : 'HomeQuest - Discover Your Perfect Stay' %>">
+    <meta property="twitter:description" content="<%= typeof description !== 'undefined' ? description : 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.' %>">
+    <meta property="twitter:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/logo.png' %>">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://homequest-spuk.vercel.app<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : '' %>">
+
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
@@ -17,7 +40,7 @@
     <link href="/css/rating.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.js"></script>
-    <meta name="google-site-verification" content="e0-bUy8nuECvipVYBcqoQCkXR-PQmmTAY-WuC5g-_2c" />
+    <meta name="google-site-verification" content="q5n2v2K85zpUJ7apJTjLRznJanr2BMcB1hlZNKShjlw" />
     <script>
         // Apply theme immediately to prevent flash
         const savedTheme = localStorage.getItem('theme') || 'light';

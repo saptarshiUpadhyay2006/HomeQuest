@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /listings/new
+Disallow: /listings/*/edit
+Disallow: /bookings
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://homequest-spuk.vercel.app/sitemap.xml
