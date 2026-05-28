@@ -139,6 +139,26 @@
         </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="dashboard-section h-100 mb-0">
+                <h4 class="section-title" style="font-family: 'Plus Jakarta Sans', sans-serif;"><i class="fa-solid fa-chart-line text-success"></i> Monthly Earnings Trend</h4>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="earningsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="dashboard-section h-100 mb-0">
+                <h4 class="section-title" style="font-family: 'Plus Jakarta Sans', sans-serif;"><i class="fa-solid fa-chart-pie text-warning"></i> Booking Distribution</h4>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <!-- Manage Bookings -->
         <div class="col-lg-8">
@@ -230,3 +250,152 @@
         </div>
     </div>
 </div>
+
+<!-- Pass Bookings and Listings data to Client Side -->
+<script id="bookings-data" type="application/json">
+    <%- JSON.stringify(bookings) %>
+</script>
+<script id="listings-data" type="application/json">
+    <%- JSON.stringify(listings) %>
+</script>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const bookings = JSON.parse(document.getElementById("bookings-data").textContent);
+        const listings = JSON.parse(document.getElementById("listings-data").textContent);
+
+        // Only process paid bookings
+        const paidBookings = bookings.filter(b => b.paymentStatus === "paid");
+
+        // 1. Prepare Earnings Trend Chart Data (Last 6 Months)
+        const monthlyEarningsMap = {};
+        const monthsToShow = 6;
+        const now = new Date();
+
+        // Initialize map with last 6 months to ensure they show up even with 0 earnings
+        for (let i = monthsToShow - 1; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const label = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+            monthlyEarningsMap[label] = 0;
+        }
+
+        paidBookings.forEach(b => {
+            const checkInDate = new Date(b.checkIn);
+            const label = checkInDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+            if (monthlyEarningsMap[label] !== undefined) {
+                monthlyEarningsMap[label] += b.totalPrice;
+            }
+        });
+
+        const earningsLabels = Object.keys(monthlyEarningsMap);
+        const earningsValues = Object.values(monthlyEarningsMap);
+
+        // 2. Prepare Booking Distribution Chart Data
+        const listingCounts = {};
+        listings.forEach(l => {
+            listingCounts[l.title] = 0;
+        });
+
+        paidBookings.forEach(b => {
+            if (b.listing && b.listing.title) {
+                listingCounts[b.listing.title] = (listingCounts[b.listing.title] || 0) + 1;
+            }
+        });
+
+        const sortedListings = Object.entries(listingCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+        const distributionLabels = sortedListings.map(item => item[0]);
+        const distributionValues = sortedListings.map(item => item[1]);
+
+        // Check theme to color charts appropriately
+        const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'light';
+        const textColor = currentTheme === 'dark' ? '#f1f5f9' : '#333333';
+        const gridColor = currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+
+        // Render line chart for Earnings
+        const ctxEarnings = document.getElementById('earningsChart').getContext('2d');
+        new Chart(ctxEarnings, {
+            type: 'line',
+            data: {
+                labels: earningsLabels,
+                datasets: [{
+                    label: 'Earnings (₹)',
+                    data: earningsValues,
+                    borderColor: '#2e7d32',
+                    backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#2e7d32',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: textColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: {
+                            color: textColor,
+                            callback: function(value) {
+                                return '₹' + value.toLocaleString("en-IN");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Render doughnut chart for Distribution
+        const ctxDist = document.getElementById('distributionChart').getContext('2d');
+        
+        const hasBookings = distributionValues.some(v => v > 0);
+        const finalLabels = hasBookings ? distributionLabels : ['No bookings yet'];
+        const finalValues = hasBookings ? distributionValues : [1];
+        const finalBgColors = hasBookings 
+            ? ['#fe424d', '#1565c0', '#ef6c00', '#2e7d32', '#9c27b0']
+            : ['rgba(150, 150, 150, 0.2)'];
+
+        new Chart(ctxDist, {
+            type: 'doughnut',
+            data: {
+                labels: finalLabels,
+                datasets: [{
+                    data: finalValues,
+                    backgroundColor: finalBgColors,
+                    borderWidth: currentTheme === 'dark' ? 2 : 1,
+                    borderColor: currentTheme === 'dark' ? '#1e293b' : '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+    });
+</script>

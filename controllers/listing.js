@@ -21,8 +21,17 @@ module.exports.showListing=async(req,res)=>{
         req.flash("error","Listing you requested does not exist!");
         res.redirect("/listings");
     }
+    
+    // Find all paid bookings for this listing to disable dates on calendar
+    const Booking = require("../models/booking.js");
+    const bookings = await Booking.find({ listing: id, paymentStatus: "paid" });
+    const bookedRanges = bookings.map(b => ({
+        from: b.checkIn.toISOString().split('T')[0],
+        to: b.checkOut.toISOString().split('T')[0]
+    }));
+
     console.log(listing);
-    res.render("listings/show.ejs",{listing});
+    res.render("listings/show.ejs",{listing, bookedRanges});
 };
 
 module.exports.createListing = async (req, res, next) => {

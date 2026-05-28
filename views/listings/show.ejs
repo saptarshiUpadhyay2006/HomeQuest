@@ -35,6 +35,8 @@
         const listing = JSON.parse(document.getElementById('listing-data').textContent);
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_red.css" />
     <style>
         .hero-img-container {
             width: 100%;
@@ -486,33 +488,94 @@
             </div>
         </div>
 
-        <!-- Hero Image Gallery (Swiper) -->
-        <div class="hero-img-container">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <% if(listing.images && listing.images.length> 0) { %>
-                        <% for(let img of listing.images) { %>
-                            <div class="swiper-slide">
-                                <img src="<%= img.url %>" alt="<%= listing.title %>">
+        <!-- Asymmetric Photo Grid -->
+        <div class="photo-grid-container position-relative">
+            <% if (listing.images && listing.images.length > 0) { %>
+                <% if (listing.images.length === 1) { %>
+                    <div class="photo-grid-1">
+                        <div class="grid-image-wrapper">
+                            <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                            <img src="<%= listing.images[0].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                        </div>
+                    </div>
+                <% } else if (listing.images.length === 2) { %>
+                    <div class="photo-grid-2">
+                        <% for(let i=0; i<2; i++) { %>
+                            <div class="grid-image-wrapper">
+                                <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                                <img src="<%= listing.images[i].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
                             </div>
+                        <% } %>
+                    </div>
+                <% } else if (listing.images.length === 3) { %>
+                    <div class="photo-grid-3">
+                        <div class="grid-image-wrapper">
+                            <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                            <img src="<%= listing.images[0].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                        </div>
+                        <div class="grid-image-side">
+                            <% for(let i=1; i<3; i++) { %>
+                                <div class="grid-image-wrapper">
+                                    <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                                    <img src="<%= listing.images[i].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                                </div>
                             <% } %>
-                                <% } else if(listing.image && listing.image.url) { %>
-                                    <div class="swiper-slide">
-                                        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-                                    </div>
-                                    <% } %>
+                        </div>
+                    </div>
+                <% } else if (listing.images.length === 4) { %>
+                    <div class="photo-grid-4">
+                        <div class="grid-image-wrapper">
+                            <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                            <img src="<%= listing.images[0].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                        </div>
+                        <div class="grid-image-side-three">
+                            <% for(let i=1; i<4; i++) { %>
+                                <div class="grid-image-wrapper">
+                                    <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                                    <img src="<%= listing.images[i].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <!-- 5 or more images (Airbnb Classic) -->
+                    <div class="photo-grid-5">
+                        <div class="grid-image-wrapper">
+                            <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                            <img src="<%= listing.images[0].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                        </div>
+                        <div class="grid-image-side-quad">
+                            <% for(let i=1; i<5; i++) { %>
+                                <div class="grid-image-wrapper">
+                                    <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                                    <img src="<%= listing.images[i].url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+            <% } else if (listing.image && listing.image.url) { %>
+                <div class="photo-grid-1">
+                    <div class="grid-image-wrapper">
+                        <div class="skeleton" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;"></div>
+                        <img src="<%= listing.image.url %>" class="grid-image img-loading" alt="<%= listing.title %>" onload="this.classList.add('img-loaded'); this.previousElementSibling.style.display='none';">
+                    </div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
+            <% } %>
 
+            <!-- Floating "Show all photos" Button -->
+            <% if ((listing.images && listing.images.length > 1) || (listing.image && listing.image.url)) { %>
+                <button class="show-all-photos-btn" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                    <i class="fa-solid fa-images me-2"></i>Show all photos
+                </button>
+            <% } %>
+
+            <!-- Wishlist Button Overlay -->
             <% if(currUser) { %>
                 <button class="wishlist-btn-show" onclick="toggleWishlist(event, '<%= listing._id %>')">
-                    <i
-                        class="<%= currUser.wishlist && currUser.wishlist.includes(listing._id) ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
+                    <i class="<%= currUser.wishlist && currUser.wishlist.includes(listing._id) ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
                 </button>
-                <% } %>
+            <% } %>
         </div>
 
         <div class="row">
@@ -719,20 +782,16 @@
                         </div>
                         <% } else { %>
                             <form action="/listings/<%= listing._id %>/bookings" method="POST" class="booking-form">
-                                <div class="row g-2 mb-3">
-                                    <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1"
-                                            style="font-size: 0.8rem;">CHECK-IN</label>
-                                        <input type="date" name="checkIn" id="checkInDate" class="form-control" required
-                                            style="border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.6rem;">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted mb-1"
+                                        style="font-size: 0.8rem;">DATES (CHECK-IN - CHECK-OUT)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background-color: var(--bg-color); border-color: #ccc; border-radius: 0.5rem 0 0 0.5rem; color: var(--text-muted);"><i class="fa-regular fa-calendar"></i></span>
+                                        <input type="text" id="dateRangePicker" class="form-control" placeholder="Select dates range" required
+                                            style="border-radius: 0 0.5rem 0.5rem 0; border: 1px solid #ccc; padding: 0.6rem; background-color: var(--bg-color); color: var(--text-color);">
                                     </div>
-                                    <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1"
-                                            style="font-size: 0.8rem;">CHECK-OUT</label>
-                                        <input type="date" name="checkOut" id="checkOutDate" class="form-control"
-                                            required
-                                            style="border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.6rem;">
-                                    </div>
+                                    <input type="hidden" name="checkIn" id="checkInDate" required>
+                                    <input type="hidden" name="checkOut" id="checkOutDate" required>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3 fw-bold d-none p-3"
                                     id="priceCalculationContainer"
@@ -756,12 +815,22 @@
                                     const totalDisplay = document.getElementById('totalPriceDisplay');
                                     const basePrice = parseInt(document.getElementById('basePrice').innerText.replace(/,/g, ''));
 
-                                    function calculatePrice() {
-                                        if (checkInInput.value && checkOutInput.value) {
-                                            const start = new Date(checkInInput.value);
-                                            const end = new Date(checkOutInput.value);
+                                    // Safely load bookedRanges passed from the backend
+                                    const bookedRanges = <%- JSON.stringify(typeof bookedRanges !== 'undefined' ? bookedRanges : []) %>;
 
-                                            if (end > start) {
+                                    flatpickr("#dateRangePicker", {
+                                        mode: "range",
+                                        minDate: "today",
+                                        dateFormat: "Y-m-d",
+                                        disable: bookedRanges,
+                                        onChange: function(selectedDates, dateStr, instance) {
+                                            if (selectedDates.length === 2) {
+                                                const start = selectedDates[0];
+                                                const end = selectedDates[1];
+                                                
+                                                checkInInput.value = instance.formatDate(start, "Y-m-d");
+                                                checkOutInput.value = instance.formatDate(end, "Y-m-d");
+
                                                 const diffTime = Math.abs(end - start);
                                                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -769,21 +838,12 @@
                                                 nightsDisplay.innerText = diffDays;
                                                 totalDisplay.innerText = (diffDays * basePrice).toLocaleString("en-IN");
                                             } else {
+                                                checkInInput.value = "";
+                                                checkOutInput.value = "";
                                                 priceContainer.classList.add('d-none');
                                             }
                                         }
-                                    }
-
-                                    checkInInput.addEventListener('change', () => {
-                                        checkOutInput.setAttribute('min', checkInInput.value);
-                                        calculatePrice();
                                     });
-                                    checkOutInput.addEventListener('change', calculatePrice);
-
-                                    // Set minimum dates
-                                    const today = new Date().toISOString().split('T')[0];
-                                    checkInInput.setAttribute('min', today);
-                                    checkOutInput.setAttribute('min', today);
                                 });
                             </script>
                             <% } %>
@@ -792,7 +852,41 @@
         </div>
     </div>
 
+    <!-- Gallery Lightbox Modal -->
+    <div class="modal fade" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-lg-down">
+            <div class="modal-content border-0" style="background: rgba(0, 0, 0, 0.95); border-radius: 1.5rem; overflow: hidden;">
+                <div class="modal-header border-0 text-white p-3">
+                    <h5 class="modal-title" id="galleryModalLabel"><%= listing.title %></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+                    <!-- Hero Image Gallery (Swiper) inside Modal -->
+                    <div class="swiper mySwiper w-100 h-100" style="max-height: 80vh;">
+                        <div class="swiper-wrapper">
+                            <% if(listing.images && listing.images.length > 0) { %>
+                                <% for(let img of listing.images) { %>
+                                    <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                        <img src="<%= img.url %>" alt="<%= listing.title %>" class="img-fluid rounded" style="max-height: 80vh; object-fit: contain; width: auto;">
+                                    </div>
+                                <% } %>
+                            <% } else if(listing.image && listing.image.url) { %>
+                                <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                    <img src="<%= listing.image.url %>" alt="<%= listing.title %>" class="img-fluid rounded" style="max-height: 80vh; object-fit: contain; width: auto;">
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var swiper = new Swiper(".mySwiper", {

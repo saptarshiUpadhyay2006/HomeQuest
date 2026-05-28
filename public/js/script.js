@@ -67,4 +67,15 @@
             console.error('Error toggling wishlist:', err);
         }
     }
+
+    // Auto-dismiss custom toast notifications after 4 seconds
+    const toasts = document.querySelectorAll('.custom-toast');
+    toasts.forEach(toast => {
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 500); // Wait for transition-out to complete before removing from DOM
+        }, 4000);
+    });
   })()
