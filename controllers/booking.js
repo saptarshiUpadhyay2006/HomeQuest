@@ -37,10 +37,21 @@ module.exports.createBooking = async (req, res) => {
         return res.redirect(`/listings/${id}`);
     }
 
-    const timeDifference = Math.abs(checkOutDate - checkInDate);
-    const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-    const validDays = daysDifference > 0 ? daysDifference : 1; 
-    const totalPrice = validDays * listing.price;
+    // Calculate total price dynamically using weekend vs weekday prices
+    const weekendPrice = listing.weekendPrice || listing.price;
+    const weekdayPrice = listing.price;
+    let totalPrice = 0;
+    let current = new Date(checkInDate);
+
+    while (current < checkOutDate) {
+        let day = current.getDay(); // 5 = Friday, 6 = Saturday
+        if (day === 5 || day === 6) {
+            totalPrice += weekendPrice;
+        } else {
+            totalPrice += weekdayPrice;
+        }
+        current.setDate(current.getDate() + 1);
+    }
 
     // Create Razorpay Order
     const options = {

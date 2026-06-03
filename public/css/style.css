@@ -184,8 +184,8 @@ footer {
 }
 
 
-.card-body{
-    padding: 0.5 !important;
+.card-body {
+    padding: 0.75rem !important;
 }
 
 .card-text p{

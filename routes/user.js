@@ -30,4 +30,8 @@ router.get("/profile/edit", isLoggedIn, wrapAsync(userController.renderEditProfi
 router.put("/profile", isLoggedIn, upload.single("avatar"), wrapAsync(userController.updateProfile));
 router.post("/wishlist/:id", isLoggedIn, wrapAsync(userController.toggleWishlist));
 
+// Google Authentication Routes
+router.get("/auth/google", userController.initiateGoogleAuth);
+router.get("/auth/google/callback", userController.handleGoogleCallback);
+
 module.exports=router;

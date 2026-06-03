@@ -5,7 +5,7 @@
         border: none;
         box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         overflow: hidden;
-        background: #fff;
+        background: var(--card-bg);
     }
     .booking-hero-img {
         width: 100%;
@@ -34,12 +34,12 @@
     .info-value {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #333;
+        color: var(--text-color);
     }
     .price-total {
         font-size: 1.8rem;
         font-weight: 800;
-        color: #222;
+        color: var(--text-color);
     }
     .btn-cancel {
         border-radius: 12px;
@@ -175,7 +175,7 @@
             </div>
 
             <div class="mt-4 text-center">
-                <a href="/bookings" class="btn btn-link text-dark text-decoration-none fw-bold">
+                <a href="/bookings" class="btn btn-link text-decoration-none fw-bold" style="color: var(--text-color);">
                     <i class="fa-solid fa-arrow-left me-2"></i> Back to My Bookings
                 </a>
             </div>

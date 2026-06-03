@@ -58,4 +58,7 @@ router
 //Edit route
 router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(listingController.renderEditForm));
 
+// Inquire route (Contact Host)
+router.post("/:id/inquire", isLoggedIn, wrapAsync(listingController.sendInquiry));
+
 module.exports=router;

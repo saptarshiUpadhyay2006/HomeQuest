@@ -230,6 +230,7 @@
             }
 
             .explore-map-pane {
+                display: none; /* Hidden by default on load */
                 width: 40%;
                 height: calc(100vh - 12rem);
                 position: sticky;
@@ -296,7 +297,7 @@
             .mapboxgl-popup-anchor-left .mapboxgl-popup-tip { border-right-color: var(--card-bg) !important; }
             .mapboxgl-popup-anchor-right .mapboxgl-popup-tip { border-left-color: var(--card-bg) !important; }
 
-            /* Floating Toggle Button for Mobile */
+            /* Floating Toggle Button for both Mobile and Desktop */
             .map-toggle-btn {
                 position: fixed;
                 bottom: 2.5rem;
@@ -311,7 +312,7 @@
                 font-weight: 700;
                 font-size: 0.95rem;
                 box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                display: none;
+                display: flex;
                 align-items: center;
                 gap: 8px;
                 transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -343,10 +344,6 @@
 
                 .explore-map-pane.show-pane {
                     display: block;
-                }
-
-                .map-toggle-btn {
-                    display: flex;
                 }
             }
         </style>
@@ -426,10 +423,10 @@
         <div class="explore-main-layout">
             <!-- Listings Grid side -->
             <div class="explore-listings-pane">
-                <div class="row row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-1 g-4 mt-2">
+                <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-md-2 row-cols-1 g-4 mt-2">
                     <% for(let listing of allListings){ %>
                         <div class="col">
-                            <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
+                            <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none" data-id="<%= listing._id %>">
                                 <div class="card listing-card border-0 h-100">
                                     <div class="card-img-container">
                                         <div class="skeleton skeleton-card-img"></div>
@@ -508,24 +505,54 @@
         document.addEventListener("DOMContentLoaded", () => {
             const listings = JSON.parse(document.getElementById("listings-json").textContent);
             
-            // Toggle Pane on Mobile
+            // Toggle Pane on Mobile and Desktop
             const toggleBtn = document.getElementById("map-toggle-btn");
             const listingsPane = document.querySelector(".explore-listings-pane");
             const mapPane = document.querySelector(".explore-map-pane");
 
+            // Set initial button text state (Map is hidden by default on load)
+            toggleBtn.innerHTML = '<i class="fa-solid fa-map"></i> Show Map';
+
             if (toggleBtn) {
                 toggleBtn.addEventListener("click", () => {
-                    const isMapShown = mapPane.classList.contains("show-pane");
-                    if (isMapShown) {
-                        mapPane.classList.remove("show-pane");
-                        listingsPane.classList.remove("hide-pane");
-                        toggleBtn.innerHTML = '<i class="fa-solid fa-map"></i> Show Map';
+                    const isMobileNow = window.innerWidth <= 991;
+                    if (isMobileNow) {
+                        const isMapShown = mapPane.classList.contains("show-pane");
+                        if (isMapShown) {
+                            mapPane.classList.remove("show-pane");
+                            listingsPane.classList.remove("hide-pane");
+                            toggleBtn.innerHTML = '<i class="fa-solid fa-map"></i> Show Map';
+                        } else {
+                            mapPane.classList.add("show-pane");
+                            listingsPane.classList.add("hide-pane");
+                            toggleBtn.innerHTML = '<i class="fa-solid fa-list"></i> Show List';
+                            if (window.mapInstance) {
+                                window.mapInstance.resize();
+                            }
+                        }
                     } else {
-                        mapPane.classList.add("show-pane");
-                        listingsPane.classList.add("hide-pane");
-                        toggleBtn.innerHTML = '<i class="fa-solid fa-list"></i> Show List';
-                        if (window.mapInstance) {
-                            window.mapInstance.resize();
+                        // Desktop Toggle Logic
+                        const isMapHidden = window.getComputedStyle(mapPane).display === "none";
+                        if (isMapHidden) {
+                            mapPane.style.display = "block";
+                            // Reset grid layout back to split-screen 3 cols (xxl) and 2 cols (xl)
+                            listingsPane.querySelector('.row').className = "row row-cols-xxl-3 row-cols-xl-2 row-cols-md-2 row-cols-1 g-4 mt-2";
+                            toggleBtn.innerHTML = '<i class="fa-solid fa-map"></i> Hide Map';
+                            if (window.mapInstance) {
+                                window.mapInstance.resize();
+                                // Re-fit bounds to make sure map fits all markers correctly
+                                const validListings = listings.filter(l => l.geometry && l.geometry.coordinates && l.geometry.coordinates.length === 2);
+                                if (validListings.length > 0) {
+                                    const bounds = new mapboxgl.LngLatBounds();
+                                    validListings.forEach(l => bounds.extend(l.geometry.coordinates));
+                                    window.mapInstance.fitBounds(bounds, { padding: 60, maxZoom: 14 });
+                                }
+                            }
+                        } else {
+                            mapPane.style.display = "none";
+                            // Expand grid layout to 4 cols when map is hidden
+                            listingsPane.querySelector('.row').className = "row row-cols-xxl-4 row-cols-xl-3 row-cols-md-2 row-cols-1 g-4 mt-2";
+                            toggleBtn.innerHTML = '<i class="fa-solid fa-map"></i> Show Map';
                         }
                     }
                 });
@@ -536,23 +563,27 @@
 
             mapboxgl.accessToken = mapToken;
             
-            // Center around the average coordinates, or default to India coordinates [78.9629, 20.5937]
-            let centerCoords = [78.9629, 20.5937];
-            let zoomLevel = 3;
-
-            if (validListings.length > 0) {
-                centerCoords = validListings[0].geometry.coordinates;
-                zoomLevel = 6;
-            }
-
             const map = new mapboxgl.Map({
                 container: 'explore-map',
                 style: 'mapbox://styles/mapbox/streets-v12',
-                center: centerCoords,
-                zoom: zoomLevel
+                center: [78.9629, 20.5937],
+                zoom: 3
             });
 
             window.mapInstance = map;
+
+            // Fit map bounds to contain all valid listings
+            if (validListings.length > 0) {
+                const bounds = new mapboxgl.LngLatBounds();
+                validListings.forEach(listing => {
+                    bounds.extend(listing.geometry.coordinates);
+                });
+                map.fitBounds(bounds, {
+                    padding: 60,
+                    maxZoom: 14,
+                    duration: 1500 // smooth transition on load
+                });
+            }
 
             // Add navigation controls
             map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
@@ -583,6 +614,7 @@
             }
 
             // Loop and add price markers
+            const markers = {};
             validListings.forEach(listing => {
                 const el = document.createElement('div');
                 el.className = 'price-marker';
@@ -609,10 +641,38 @@
                     el.classList.remove('active-marker');
                 });
 
-                new mapboxgl.Marker(el)
+                const markerInstance = new mapboxgl.Marker(el)
                     .setLngLat(listing.geometry.coordinates)
                     .setPopup(popup)
                     .addTo(map);
+
+                markers[listing._id] = { marker: markerInstance, element: el, popup: popup };
+            });
+
+            // Bind card hover event listeners for panning and highlight effects
+            document.querySelectorAll(".listing-link").forEach(card => {
+                const listingId = card.getAttribute("data-id");
+                
+                card.addEventListener("mouseenter", () => {
+                    const markerData = markers[listingId];
+                    if (markerData) {
+                        markerData.element.classList.add("active-marker");
+                        map.flyTo({
+                            center: markerData.marker.getLngLat(),
+                            zoom: Math.max(map.getZoom(), 8),
+                            speed: 1.0,
+                            curve: 1.2,
+                            essential: true
+                        });
+                    }
+                });
+
+                card.addEventListener("mouseleave", () => {
+                    const markerData = markers[listingId];
+                    if (markerData && !markerData.popup.isOpen()) {
+                        markerData.element.classList.remove("active-marker");
+                    }
+                });
             });
         });
     </script>

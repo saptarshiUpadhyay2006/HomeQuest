@@ -1,5 +1,189 @@
 const sampleListings = [
   {
+    "title": "Taj Mahal Heritage Villa",
+    "description": "Experience the magic of the Taj Mahal right from your window. This elegant heritage villa in Agra offers traditional Mughlai hospitality, beautiful marble finishes, and a private terrace overlooking the gardens.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 3500,
+    "weekendPrice": 4200,
+    "location": "Agra, Uttar Pradesh",
+    "country": "India",
+    "category": "Iconic Cities"
+  },
+  {
+    "title": "Goa Beach House",
+    "description": "A stunning beach villa steps away from the golden sands of Candolim. Featuring a private pool, breezy outdoor patio, and modern Goan architecture, it is perfect for sun seekers.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 5000,
+    "weekendPrice": 6500,
+    "location": "Candolim, Goa",
+    "country": "India",
+    "category": "Amazing pools"
+  },
+  {
+    "title": "Munnar Tea Garden Dome",
+    "description": "Nestled in the lush rolling tea hills of Munnar, this eco-friendly dome offers breathtaking views of the misty valleys. Wake up to the aroma of fresh tea leaves and enjoy pure mountain air.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1599824434288-66236b2f7682?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 4500,
+    "weekendPrice": 5000,
+    "location": "Munnar, Kerala",
+    "country": "India",
+    "category": "Domes"
+  },
+  {
+    "title": "Royal Udaipur Palace Suite",
+    "description": "Live like royalty in a historic palace suite overlooking the pristine Lake Pichola. Adorned with traditional Rajasthani artwork, royal chandeliers, and a lakeside balcony.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1595658658481-d53d3f999874?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1598977123418-45f04b615993?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 8000,
+    "weekendPrice": 9500,
+    "location": "Udaipur, Rajasthan",
+    "country": "India",
+    "category": "Castles"
+  },
+  {
+    "title": "Himalayan Log Cabin",
+    "description": "Escape to this rustic wooden cabin in the snow-capped hills of Manali. Enjoy cozy evenings by the fireplace, stunning pine forest views, and quick access to ski slopes.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 3000,
+    "weekendPrice": 3500,
+    "location": "Manali, Himachal Pradesh",
+    "country": "India",
+    "category": "Mountains"
+  },
+  {
+    "title": "Luxury Alleppey Houseboat",
+    "description": "Cruise through the serene backwaters of Kerala on a luxury private houseboat. Traditional design meets modern comfort, complete with an on-board chef preparing local delicacies.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 6000,
+    "weekendPrice": 7200,
+    "location": "Alappuzha, Kerala",
+    "country": "India",
+    "category": "Cruise"
+  },
+  {
+    "title": "Jaisalmer Desert Glamping",
+    "description": "Spend a magical night under the stars in a luxury tented camp nestled in the Sam Sand Dunes. Experience traditional Rajasthani music, dance, and a camel safari at sunset.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1509316975850-ff9c5edd0cd9?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 3200,
+    "weekendPrice": 3800,
+    "location": "Jaisalmer, Rajasthan",
+    "country": "India",
+    "category": "Camping"
+  },
+  {
+    "title": "Coorg Organic Coffee Farmstay",
+    "description": "Reconnect with nature at this organic estate in Coorg. Explore spice plantations, enjoy fresh home-brewed coffee, and relax in a beautifully restored plantation bungalow.",
+    "images": [
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "filename": "listingimage",
+        "url": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80"
+      }
+    ],
+    "price": 2800,
+    "weekendPrice": 3200,
+    "location": "Madikeri, Karnataka",
+    "country": "India",
+    "category": "Farms"
+  },
+  {
     "title": "Cozy Beachfront Cottage",
     "description": "Escape to this charming beachfront cottage for a relaxing getaway. Enjoy stunning ocean views and easy access to the beach.",
     "images": [

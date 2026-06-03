@@ -666,6 +666,22 @@
                     </div>
                 </div>
 
+                <!-- Contact Host Section -->
+                <% if(currUser && !listing.owner._id.equals(currUser._id)) { %>
+                    <div class="card border-0 shadow-sm p-4 mt-5 mb-4" style="border-radius: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color) !important;">
+                        <h4 class="section-title">Still have questions?</h4>
+                        <p class="text-muted mb-4">Send a direct message to the host, <strong><%= listing.owner.username %></strong>. They will receive an email and reply directly to your contact address.</p>
+                        
+                        <form action="/listings/<%= listing._id %>/inquire" method="POST" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <textarea name="message" id="inquiryMessage" cols="30" rows="3" class="form-control" required placeholder="Ask about check-in times, amenities, local recommendations..."></textarea>
+                                <div class="invalid-feedback">Please write a message to contact the host.</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom" style="width: auto;"><i class="fa-solid fa-paper-plane me-2"></i>Send Message to Host</button>
+                        </form>
+                    </div>
+                <% } %>
+
                 <hr class="my-5 text-muted">
                 
                 <!-- Review Section -->
@@ -793,13 +809,32 @@
                                     <input type="hidden" name="checkIn" id="checkInDate" required>
                                     <input type="hidden" name="checkOut" id="checkOutDate" required>
                                 </div>
-                                <div class="d-flex justify-content-between mb-3 fw-bold d-none p-3"
+                                <div class="d-none mb-3 p-3"
                                     id="priceCalculationContainer"
-                                    style="background: rgba(0,0,0,0.03); border-radius: 0.5rem;">
-                                    <span class="text-muted">₹<span id="basePrice">
-                                            <%= listing.price %>
-                                        </span> × <span id="numberOfNights">0</span> nights</span>
-                                    <span>₹<span id="totalPriceDisplay">0</span></span>
+                                    style="background: rgba(227, 73, 73, 0.04); border: 1px solid rgba(227, 73, 73, 0.1); border-radius: 1rem; font-size: 0.95rem;">
+                                    <!-- Weekday Price Breakdown -->
+                                    <div class="d-flex justify-content-between mb-2 align-items-center" id="weekdayBreakdownRow">
+                                        <span class="text-muted">
+                                            <i class="fa-regular fa-sun me-1 text-warning"></i>
+                                            ₹<span id="weekdayRate"><%= listing.price %></span> × <span id="weekdayNights">0</span> weekday nights
+                                        </span>
+                                        <span class="fw-bold">₹<span id="weekdayTotal">0</span></span>
+                                    </div>
+                                    <!-- Weekend Price Breakdown -->
+                                    <div class="d-flex justify-content-between mb-2 align-items-center" id="weekendBreakdownRow">
+                                        <span class="text-muted">
+                                            <i class="fa-regular fa-moon me-1 text-primary"></i>
+                                            ₹<span id="weekendRate"><%= listing.weekendPrice || listing.price %></span> × <span id="weekendNights">0</span> weekend nights
+                                        </span>
+                                        <span class="fw-bold">₹<span id="weekendTotal">0</span></span>
+                                    </div>
+                                    <!-- Horizontal Divider -->
+                                    <hr class="my-2" style="border-top: 1.5px dashed var(--border-color); opacity: 0.7;">
+                                    <!-- Total Price -->
+                                    <div class="d-flex justify-content-between align-items-center fw-bold" style="font-size: 1.1rem;">
+                                        <span>Total Est. Cost</span>
+                                        <span style="color: #e34949;">₹<span id="totalPriceDisplay">0</span></span>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary-custom mb-3"
                                     id="reserveBtn">Reserve</button>
@@ -811,9 +846,18 @@
                                     const checkInInput = document.getElementById('checkInDate');
                                     const checkOutInput = document.getElementById('checkOutDate');
                                     const priceContainer = document.getElementById('priceCalculationContainer');
-                                    const nightsDisplay = document.getElementById('numberOfNights');
+                                    
+                                    const weekdayPrice = <%= listing.price %>;
+                                    const weekendPrice = <%= listing.weekendPrice || listing.price %>;
+
+                                    const weekdayNightsDisplay = document.getElementById('weekdayNights');
+                                    const weekendNightsDisplay = document.getElementById('weekendNights');
+                                    const weekdayTotalDisplay = document.getElementById('weekdayTotal');
+                                    const weekendTotalDisplay = document.getElementById('weekendTotal');
                                     const totalDisplay = document.getElementById('totalPriceDisplay');
-                                    const basePrice = parseInt(document.getElementById('basePrice').innerText.replace(/,/g, ''));
+                                    
+                                    const weekdayRow = document.getElementById('weekdayBreakdownRow');
+                                    const weekendRow = document.getElementById('weekendBreakdownRow');
 
                                     // Safely load bookedRanges passed from the backend
                                     const bookedRanges = <%- JSON.stringify(typeof bookedRanges !== 'undefined' ? bookedRanges : []) %>;
@@ -825,18 +869,52 @@
                                         disable: bookedRanges,
                                         onChange: function(selectedDates, dateStr, instance) {
                                             if (selectedDates.length === 2) {
-                                                const start = selectedDates[0];
-                                                const end = selectedDates[1];
+                                                const start = new Date(selectedDates[0]);
+                                                const end = new Date(selectedDates[1]);
                                                 
                                                 checkInInput.value = instance.formatDate(start, "Y-m-d");
                                                 checkOutInput.value = instance.formatDate(end, "Y-m-d");
 
-                                                const diffTime = Math.abs(end - start);
-                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                // Calculate weekday vs weekend nights
+                                                let weekdays = 0;
+                                                let weekends = 0;
+                                                let current = new Date(start);
+
+                                                while (current < end) {
+                                                    let day = current.getDay(); // 5 = Friday, 6 = Saturday
+                                                    if (day === 5 || day === 6) {
+                                                        weekends++;
+                                                    } else {
+                                                        weekdays++;
+                                                    }
+                                                    current.setDate(current.getDate() + 1);
+                                                }
+
+                                                const weekdayTotal = weekdays * weekdayPrice;
+                                                const weekendTotal = weekends * weekendPrice;
+                                                const grandTotal = weekdayTotal + weekendTotal;
+
+                                                // Update UI values
+                                                weekdayNightsDisplay.innerText = weekdays;
+                                                weekendNightsDisplay.innerText = weekends;
+                                                weekdayTotalDisplay.innerText = weekdayTotal.toLocaleString("en-IN");
+                                                weekendTotalDisplay.innerText = weekendTotal.toLocaleString("en-IN");
+                                                totalDisplay.innerText = grandTotal.toLocaleString("en-IN");
+
+                                                // Show/Hide rows
+                                                if (weekdays > 0) {
+                                                    weekdayRow.classList.remove('d-none');
+                                                } else {
+                                                    weekdayRow.classList.add('d-none');
+                                                }
+
+                                                if (weekends > 0) {
+                                                    weekendRow.classList.remove('d-none');
+                                                } else {
+                                                    weekendRow.classList.add('d-none');
+                                                }
 
                                                 priceContainer.classList.remove('d-none');
-                                                nightsDisplay.innerText = diffDays;
-                                                totalDisplay.innerText = (diffDays * basePrice).toLocaleString("en-IN");
                                             } else {
                                                 checkInInput.value = "";
                                                 checkOutInput.value = "";
@@ -1000,21 +1078,78 @@
                         else if(category.includes('Bar') || category.includes('Pub')) icon = 'fa-glass-cheers';
 
                         list.innerHTML += `
-                            <div class="d-flex align-items-center p-2 rounded mb-1" style="background: rgba(227, 73, 73, 0.05);">
+                            <div class="d-flex align-items-center p-2 rounded mb-1 hotspot-item" 
+                                 style="background: rgba(227, 73, 73, 0.05); cursor: pointer; transition: all 0.2s ease;"
+                                 data-lng="${poi.geometry.coordinates[0]}" 
+                                 data-lat="${poi.geometry.coordinates[1]}" 
+                                 data-name="${props.name.replace(/'/g, "\\'")}">
                                 <div class="me-3 bg-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; color: #e34949; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                                     <i class="fa-solid ${icon}"></i>
                                 </div>
-                                <div style="min-width: 0;">
-                                    <div class="fw-bold small text-truncate">${props.name}</div>
+                                <div style="min-width: 0; flex-grow: 1;">
+                                    <div class="fw-bold small text-truncate" style="color: var(--text-color);">${props.name}</div>
                                     <div class="text-muted text-truncate" style="font-size: 0.75rem;">${category}</div>
                                 </div>
+                                <div class="ms-2 text-muted small"><i class="fa-solid fa-chevron-right"></i></div>
                             </div>
                         `;
                     });
+
+                    // Set up click listeners for the hotspots
+                    setupHotspotClicks();
+
                 } catch (err) {
                     console.error("Nearby Error:", err);
                     document.getElementById('nearby-list').innerHTML = "<div class='py-3 text-muted'>Could not load hotspots</div>";
                 }
+            }
+
+            function setupHotspotClicks() {
+                document.querySelectorAll('.hotspot-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const lng = parseFloat(item.dataset.lng);
+                        const lat = parseFloat(item.dataset.lat);
+                        const name = item.dataset.name;
+
+                        if (window.mapInstance) {
+                            // 1. Smoothly fly to the coordinates of the clicked POI
+                            window.mapInstance.flyTo({
+                                center: [lng, lat],
+                                zoom: 15,
+                                essential: true
+                            });
+
+                            // 2. Clear any existing active hotspot pin
+                            if (window.activeHotspotMarker) {
+                                window.activeHotspotMarker.remove();
+                            }
+
+                            // 3. Drop a custom red pin marker and bind Google Maps popup
+                            const popup = new mapboxgl.Popup({ offset: 25 })
+                                .setHTML(`
+                                    <div style="font-family: 'Outfit', sans-serif; padding: 5px; color: #222;">
+                                        <div style="font-weight: 800; font-size: 0.9rem; margin-bottom: 5px;">${name}</div>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}" 
+                                           target="_blank" 
+                                           class="btn btn-sm text-white py-1 px-2 text-decoration-none d-inline-block" 
+                                           style="font-size: 0.75rem; border-radius: 6px; background-color: #e34949; font-weight: 700;">
+                                            Open in Google Maps
+                                        </a>
+                                    </div>
+                                `);
+
+                            window.activeHotspotMarker = new mapboxgl.Marker({ color: '#e34949' })
+                                .setLngLat([lng, lat])
+                                .setPopup(popup)
+                                .addTo(window.mapInstance);
+
+                            window.activeHotspotMarker.togglePopup();
+
+                            // 4. Smooth scroll the map container into focus
+                            document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                });
             }
 
             fetchWeather();

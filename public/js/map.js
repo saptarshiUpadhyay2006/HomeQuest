@@ -5,6 +5,7 @@ const map = new mapboxgl.Map({
     center: listing.geometry.coordinates, 
     zoom: 9,
 });
+window.mapInstance = map;
 
 // Fix for maps not appearing correctly on mobile/resized containers
 map.on('load', () => {

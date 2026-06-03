@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
+require("../models/user.js"); // Ensure User model is loaded
 const path = require("path");
 require('dotenv').config({ path: path.join(__dirname, "../.env") });
 
@@ -55,4 +56,5 @@ const initDB = async () => {
 
     await Listing.insertMany(updatedData);
     console.log("data was initialized with real coordinates");
+    await mongoose.disconnect();
 }

@@ -7,6 +7,9 @@ const userSchema=new Schema({
         type:String,
         required:true
     },
+    googleId: {
+        type: String
+    },
     avatar: {
         url: String,
         filename: String,

@@ -1,6 +1,7 @@
 const Listing=require("../models/listing");
 const Booking=require("../models/booking");
 const mbxGeoCoding= require('@mapbox/mapbox-sdk/services/geocoding');
+const nodemailer = require("nodemailer");
 const mapToken=process.env.MAP_TOKEN;
 const geocodingClient=mbxGeoCoding({accessToken:mapToken});
 
@@ -157,6 +158,71 @@ module.exports.renderDashboard = async (req, res) => {
         totalBookings,
         upcomingBookings 
     });
+};
+
+module.exports.sendInquiry = async (req, res) => {
+    const { id } = req.params;
+    const { message } = req.body;
+
+    const listing = await Listing.findById(id).populate("owner");
+    if (!listing) {
+        req.flash("error", "Listing you requested does not exist!");
+        return res.redirect("/listings");
+    }
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        req.flash("error", "Nodemailer error: Email configuration missing on server.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    const hostEmail = listing.owner.email;
+    const guestUsername = req.user.username;
+    const guestEmail = req.user.email;
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const mailOptions = {
+        from: `"HomeQuest Stays" <${process.env.EMAIL_USER}>`,
+        to: hostEmail,
+        subject: `New Inquiry: ${listing.title} from ${guestUsername}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div style="background-color: #fe424d; padding: 20px; text-align: center; color: white;">
+                    <h1 style="margin: 0; font-size: 22px; color: white;">New Stay Inquiry</h1>
+                </div>
+                <div style="padding: 20px;">
+                    <p>Hi <strong>${listing.owner.username}</strong>,</p>
+                    <p>You have received a new question about your listing, <strong>${listing.title}</strong>.</p>
+                    
+                    <div style="background-color: #f9f9f9; border-left: 4px solid #fe424d; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">Message from ${guestUsername}:</h4>
+                        <p style="margin: 0; font-style: italic; color: #555;">"${message}"</p>
+                    </div>
+                    
+                    <div style="background-color: #f1f1f1; padding: 12px; border-radius: 5px; font-size: 13px;">
+                        <strong>Guest Contact Info:</strong><br>
+                        Username: ${guestUsername}<br>
+                        Email: <a href="mailto:${guestEmail}">${guestEmail}</a>
+                    </div>
+                    
+                    <p style="margin-top: 20px;">Please reply directly to the guest's email to answer their questions.</p>
+                    
+                    <p style="margin-bottom: 0;">Warm regards,<br><strong>The HomeQuest Team</strong></p>
+                </div>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    req.flash("success", "Your inquiry has been sent to the host successfully!");
+    res.redirect(`/listings/${id}`);
 };
 
   
