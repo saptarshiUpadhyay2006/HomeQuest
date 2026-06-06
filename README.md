@@ -6,22 +6,22 @@ This project focuses on premium design aesthetics, clean MVC architecture, robus
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-*   **🗺️ Interactive Maps & Attractions**: Auto-geocoding of properties on Mapbox GL JS with location boundaries and a **Tilequery Attraction Finder** to locate hotspots in a 3km radius.
-*   **💳 Razorpay Checkout**: Fully functional payment gateway with SHA-256 cryptographic signature verification.
-*   **📅 Smart Calendar & Bookings**: Integrated date pickers checking booking schedules to block booked ranges and prevent double bookings.
-*   **💰 Dynamic Pricing Engine**: Nightly pricing calculations featuring automatic premiums for weekend stays (Friday & Saturday nights).
-*   **📄 Automated PDF Receipts**: In-memory generation of official PDF invoices via PDFKit sent instantly to guests.
-*   **✉️ Nodemailer Notifications**: Automated receipt deliveries and direct host inquiries via SMTP mail channels.
-*   **⛅ Real-time Weather Widget**: Live weather telemetry fetched dynamically using the Open-Meteo API.
-*   **🔐 Unified Auth System**: Secure passport logins, Google OAuth 2.0 integrations, and a defensive Google mock callback developer mode.
-*   **❤️ User Profiles & Wishlists**: Personalized profile centers containing profile picture updates, wishlists, and host booking records.
-*   **🌙 Responsive Dark Mode**: Persistent theme settings via local storage and CSS custom variables.
+*   **Interactive Maps & Attractions**: Auto-geocoding of properties on Mapbox GL JS with location boundaries and a **Tilequery Attraction Finder** to locate hotspots in a 3km radius.
+*   **Razorpay Checkout**: Fully functional payment gateway with SHA-256 cryptographic signature verification.
+*   **Smart Calendar & Bookings**: Integrated date pickers checking booking schedules to block booked ranges and prevent double bookings.
+*   **Dynamic Pricing Engine**: Nightly pricing calculations featuring automatic premiums for weekend stays (Friday & Saturday nights).
+*   **Automated PDF Receipts**: In-memory generation of official PDF invoices via PDFKit sent instantly to guests.
+*   **Nodemailer Notifications**: Automated receipt deliveries and direct host inquiries via SMTP mail channels.
+*   **Real-time Weather Widget**: Live weather telemetry fetched dynamically using the Open-Meteo API.
+*   **Unified Auth System**: Secure passport logins, Google OAuth 2.0 integrations, and a defensive Google mock callback developer mode.
+*   **User Profiles & Wishlists**: Personalized profile centers containing profile picture updates, wishlists, and host booking records.
+*   **Responsive Dark Mode**: Persistent theme settings via local storage and CSS custom variables.
 
 ---
 
-## 📚 Detailed Technical Documentation
+## Detailed Technical Documentation
 
 We have compiled a top-to-bottom technical architecture documentation detailing schemas, API endpoints, lifecycle events, and step-by-step installation guides:
 
@@ -29,7 +29,7 @@ We have compiled a top-to-bottom technical architecture documentation detailing 
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## Tech Stack & Dependencies
 
 *   **Core**: Node.js, Express.js
 *   **Database**: MongoDB, Mongoose ODM
@@ -41,7 +41,7 @@ We have compiled a top-to-bottom technical architecture documentation detailing 
 
 ---
 
-## ⚙️ Quick Start
+## Quick Start
 
 ### 1. Install dependencies
 ```bash
