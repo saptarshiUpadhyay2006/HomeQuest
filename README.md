@@ -1,35 +1,67 @@
-HomeQuest is a full-stack web application inspired by Airbnb and other travel platforms. It’s designed to help users list, discover, and manage stays — built entirely using the MERN stack.
-My main focus during this project was creating strong end-to-end backend services with clean, scalable code.
+# 🏡 HomeQuest - Luxury Living, Everywhere
 
-✨ Current Features in HomeQuest:
+HomeQuest is a feature-rich, full-stack vacation rental web application inspired by Airbnb, designed to help users list, discover, and book unique stays around the world.
 
-1️⃣ Basic signup, login, and logout functionalities
-2️⃣ Listing your property with essential details
-3️⃣ Editing or deleting listings anytime
-4️⃣ Search feature to find the right stay (to be refined as more data comes in)
-5️⃣ Interactive map 🗺️ to trace listings
-6️⃣ Review system for user feedback
+This project focuses on premium design aesthetics, clean MVC architecture, robust security, and advanced integrations including interactive mapping, geocoding, weather forecasts, live e-commerce transactions, automated PDF invoicing, and real-time host notifications.
 
-🚀 What’s Next (Phase 2 in Progress):
+---
 
-1️⃣ Full functionality for category filters
-2️⃣ Integrated calendar system 📅 for bookings
-3️⃣ A more engaging and modern frontend
+## 🚀 Key Features
 
-⚙️ Tech & Integrations:
+*   **🗺️ Interactive Maps & Attractions**: Auto-geocoding of properties on Mapbox GL JS with location boundaries and a **Tilequery Attraction Finder** to locate hotspots in a 3km radius.
+*   **💳 Razorpay Checkout**: Fully functional payment gateway with SHA-256 cryptographic signature verification.
+*   **📅 Smart Calendar & Bookings**: Integrated date pickers checking booking schedules to block booked ranges and prevent double bookings.
+*   **💰 Dynamic Pricing Engine**: Nightly pricing calculations featuring automatic premiums for weekend stays (Friday & Saturday nights).
+*   **📄 Automated PDF Receipts**: In-memory generation of official PDF invoices via PDFKit sent instantly to guests.
+*   **✉️ Nodemailer Notifications**: Automated receipt deliveries and direct host inquiries via SMTP mail channels.
+*   **⛅ Real-time Weather Widget**: Live weather telemetry fetched dynamically using the Open-Meteo API.
+*   **🔐 Unified Auth System**: Secure passport logins, Google OAuth 2.0 integrations, and a defensive Google mock callback developer mode.
+*   **❤️ User Profiles & Wishlists**: Personalized profile centers containing profile picture updates, wishlists, and host booking records.
+*   **🌙 Responsive Dark Mode**: Persistent theme settings via local storage and CSS custom variables.
 
-Cloudinary → for image & video uploads
+---
 
-Mapbox API → for map and location tracking
+## 📚 Detailed Technical Documentation
 
-MongoDB Atlas + Render → for deployment
+We have compiled a top-to-bottom technical architecture documentation detailing schemas, API endpoints, lifecycle events, and step-by-step installation guides:
 
-Bootstrap → for flash messages and responsive UI components
+👉 **[Read the Full Technical Architecture Guide (PROJECT_DOCUMENTATION.md)](PROJECT_DOCUMENTATION.md)**
 
-MDN Docs & npm → my constant go-tos for debugging and learning
+---
 
-💭 Honest Confession:
+## 🛠️ Tech Stack & Dependencies
 
-The project may look simple right now — but that’s intentional. Like Airbnb’s early version, HomeQuest focuses on a clean, minimal, and highly responsive user experience before scaling up.
+*   **Core**: Node.js, Express.js
+*   **Database**: MongoDB, Mongoose ODM
+*   **Templating**: EJS, ejs-mate
+*   **Styling**: Bootstrap 5.3, custom Vanilla CSS variables (for themes)
+*   **Auth**: Passport.js (Local, Google OAuth 2.0)
+*   **Media**: Cloudinary, Multer
+*   **APIs**: Mapbox GL JS, Razorpay API, Open-Meteo, Nodemailer (Gmail SMTP)
 
-A fun moment: I once spent 30 minutes debugging because I wrote "mehtod" instead of "method" 😅 — shoutout to ChatGPT for catching it instantly!
+---
+
+## ⚙️ Quick Start
+
+### 1. Install dependencies
+```bash
+npm install
+```
+
+### 2. Configure environment variables
+Create a `.env` file in the root directory and copy the values listed in the environment section of [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md).
+
+### 3. Seed database
+```bash
+node init/index.js
+```
+
+### 4. Run application
+```bash
+npm run dev
+```
+Open [http://localhost:8080](http://localhost:8080) to explore.
+
+---
+
+*This application is created as a college major project for educational purposes only.*
