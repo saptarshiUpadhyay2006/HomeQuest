@@ -68,7 +68,7 @@ HomeQuest/
 │   ├── booking.js              # Booking creation, payment verification, PDF & email triggers
 │   ├── listing.js              # Listing CRUD, host dashboard, Mapbox forward geocoding, inquiry SMTP dispatcher
 │   ├── review.js               # Review creation and deletion logic
-│   └── users.js                # Profile updates, wishlists toggles, local signups, mock/live Google OAuth callbacks
+│   └── users.js                # Profile updates, wishlists toggles, local signups, and Google OAuth callbacks
 ├── models/                     # Mongoose Schema Definitions (Data layer models)
 │   ├── booking.js              # Booking metadata schema (check-in/check-out dates, razorpay IDs, price, status)
 │   ├── listing.js              # Listing model schema (coordinates, images array, title, price, weekendPrice)
@@ -244,7 +244,7 @@ Manages session lifecycle, registrations, user bios, wishlists, and OAuth. File:
 | **GET** | `/profile/edit` | `isLoggedIn` | `userController.renderEditProfileForm` | Renders biography and avatar edit page. |
 | **PUT** | `/profile` | `isLoggedIn`, Multer `upload.single` | `userController.updateProfile` | Updates bio, replaces avatar on Cloudinary, and saves changes. |
 | **POST** | `/wishlist/:id` | `isLoggedIn` | `userController.toggleWishlist` | AJAX callback adding/removing listing ID in user's wishlist array. Returns JSON updates. |
-| **GET** | `/auth/google` | None | `userController.initiateGoogleAuth` | Redirects to Google authentication screen (or launches Mock Mode if credentials are not configured). |
+| **GET** | `/auth/google` | None | `userController.initiateGoogleAuth` | Redirects to Google authentication screen. |
 | **GET** | `/auth/google/callback` | `passport.authenticate("google")` | `userController.handleGoogleCallback` | Receives profile metadata, creates/binds user profiles, and logs user in. |
 
 ---
@@ -254,23 +254,8 @@ Manages session lifecycle, registrations, user bios, wishlists, and OAuth. File:
 ### A. Authentication & Security (Local & Google OAuth)
 Authentication utilizes Passport.js to coordinate user sessions:
 - **Local Authentication**: Uses `passport-local-mongoose` plugin inside [models/user.js](file:///Users/saptarshiupadhyay/Desktop/HomeQuest/models/user.js). It handles hashing and salting automatically via PBKDF2 algorithm.
-- **Google OAuth 2.0**: Implements passport's `GoogleStrategy` with email verification.
-- **Mock Fallback Strategy**: To facilitate local development and deployment testing without active environment credentials, the controller handles authentication gracefully in a mock mode:
-  ```javascript
-  // controllers/users.js
-  const mockGoogleLogin = async (req, res, next) => {
-      let user = await User.findOne({ googleId: "mock_google_id_12345" });
-      if (!user) {
-          user = new User({
-              googleId: "mock_google_id_12345",
-              email: "google_tester@example.com",
-              username: "google_tester"
-          });
-          await user.save();
-      }
-      req.login(user, (err) => { ... });
-  };
-  ```
+- **Google OAuth 2.0**: Implements Passport's `GoogleStrategy` with email verification. Users authenticate securely through Google's authorization servers, which verify their identity and redirect them back to the application callbacks.
+
 
 ---
 

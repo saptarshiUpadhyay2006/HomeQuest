@@ -91,50 +91,17 @@ module.exports.toggleWishlist = async (req, res) => {
     }
 };
 
-module.exports.initiateGoogleAuth = async (req, res, next) => {
-    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-        passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
-    } else {
-        await mockGoogleLogin(req, res, next);
-    }
+module.exports.initiateGoogleAuth = (req, res, next) => {
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
 };
 
 module.exports.handleGoogleCallback = (req, res, next) => {
-    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-        passport.authenticate("google", {
-            failureRedirect: "/login",
-            failureFlash: true
-        })(req, res, () => {
-            req.flash("success", "Welcome to HomeQuest! Authenticated via Google.");
-            let redirectUrl = res.locals.redirectUrl || "/listings";
-            res.redirect(redirectUrl);
-        });
-    } else {
-        req.flash("error", "Google credentials not configured.");
-        res.redirect("/login");
-    }
-};
-
-const mockGoogleLogin = async (req, res, next) => {
-    try {
-        let user = await User.findOne({ googleId: "mock_google_id_12345" });
-        if (!user) {
-            user = new User({
-                googleId: "mock_google_id_12345",
-                email: "google_tester@example.com",
-                username: "google_tester"
-            });
-            await user.save();
-        }
-        req.login(user, (err) => {
-            if (err) {
-                return next(err);
-            }
-            req.flash("success", "Logged in via Google (Mock Mode)! Add GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET in .env for live OAuth.");
-            res.redirect("/listings");
-        });
-    } catch (e) {
-        req.flash("error", "Mock login failed: " + e.message);
-        res.redirect("/login");
-    }
+    passport.authenticate("google", {
+        failureRedirect: "/login",
+        failureFlash: true
+    })(req, res, () => {
+        req.flash("success", "Welcome to HomeQuest! Authenticated via Google.");
+        let redirectUrl = res.locals.redirectUrl || "/listings";
+        res.redirect(redirectUrl);
+    });
 };

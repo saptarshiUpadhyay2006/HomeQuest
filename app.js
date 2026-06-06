@@ -37,6 +37,7 @@ async function main() {
     await mongoose.connect(dbUrl);
 }
 
+app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -78,39 +79,38 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
-// Register Google Strategy defensively (only if credentials exist in env)
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    const GoogleStrategy = require("passport-google-oauth20").Strategy;
-    passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback"
-    }, async (accessToken, refreshToken, profile, done) => {
-        try {
-            let user = await User.findOne({ googleId: profile.id });
-            if (!user) {
-                const email = profile.emails && profile.emails[0] ? profile.emails[0].value : "";
-                if (email) {
-                    user = await User.findOne({ email });
-                }
-                if (!user) {
-                    user = new User({
-                        googleId: profile.id,
-                        email: email || `${profile.id}@google.mock`,
-                        username: profile.displayName.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000)
-                    });
-                    await user.save();
-                } else {
-                    user.googleId = profile.id;
-                    await user.save();
-                }
+// Register Google Strategy for production deploy
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        let user = await User.findOne({ googleId: profile.id });
+        if (!user) {
+            const email = profile.emails && profile.emails[0] ? profile.emails[0].value : "";
+            if (email) {
+                user = await User.findOne({ email });
             }
-            return done(null, user);
-        } catch (err) {
-            return done(err, null);
+            if (!user) {
+                user = new User({
+                    googleId: profile.id,
+                    email: email || `${profile.id}@google.mock`,
+                    username: profile.displayName.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000)
+                });
+                await user.save();
+            } else {
+                user.googleId = profile.id;
+                await user.save();
+            }
         }
-    }));
-}
+        return done(null, user);
+    } catch (err) {
+        return done(err, null);
+    }
+}));
+
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
