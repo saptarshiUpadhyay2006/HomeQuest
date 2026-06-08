@@ -25,7 +25,7 @@ This project focuses on premium design aesthetics, clean MVC architecture, robus
 
 We have compiled a top-to-bottom technical architecture documentation detailing schemas, API endpoints, lifecycle events, and step-by-step installation guides:
 
-👉 **[Read the Full Technical Architecture Guide (Project_Documentation.md)](Project_Documentation.md)**
+👉 **[Read the Full Technical Architecture Guide (Project_Doc.md)](Project_Doc.md)**
 
 ---
 
@@ -49,7 +49,7 @@ npm install
 ```
 
 ### 2. Configure environment variables
-Create a `.env` file in the root directory and copy the values listed in the environment section of [Project_Documentation.md](Project_Documentation.md).
+Create a `.env` file in the root directory and copy the values listed in the environment section of [Project_Doc.md](Project_Doc.md).
 
 ### 3. Seed database
 ```bash
