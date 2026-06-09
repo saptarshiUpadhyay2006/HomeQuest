@@ -4,7 +4,7 @@ const Booking = require("../models/booking");
 const passport = require("passport");
 
 module.exports.renderSignupForm = (req, res) => {
-    res.render("./users/signup.ejs");
+    res.render("./users/signup.ejs", { title: "Join HomeQuest - Book Unique Stays" });
 };
 
 module.exports.signup = async (req, res) => {
@@ -28,7 +28,7 @@ module.exports.signup = async (req, res) => {
 };
 
 module.exports.renderLoginForm = (req, res) => {
-    res.render("users/login.ejs");
+    res.render("users/login.ejs", { title: "Sign In | HomeQuest" });
 };
 
 module.exports.login = async (req, res) => {
@@ -54,11 +54,19 @@ module.exports.renderProfile = async (req, res) => {
     });
     const listings = await Listing.find({ owner: req.user._id });
     const bookings = await Booking.find({ user: req.user._id }).populate("listing");
-    res.render("users/profile.ejs", { user, listings, bookings });
+    res.render("users/profile.ejs", { 
+        user, 
+        listings, 
+        bookings,
+        title: `${user.username}'s Profile | HomeQuest`
+    });
 };
 
 module.exports.renderEditProfileForm = async (req, res) => {
-    res.render("users/editProfile.ejs", { user: req.user });
+    res.render("users/editProfile.ejs", { 
+        user: req.user,
+        title: "Edit Profile | HomeQuest"
+    });
 };
 
 module.exports.updateProfile = async (req, res) => {

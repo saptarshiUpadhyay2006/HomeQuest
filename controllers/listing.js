@@ -7,7 +7,7 @@ const geocodingClient=mbxGeoCoding({accessToken:mapToken});
 
 
 module.exports.renderNewForm=(req,res)=>{
-    res.render("listings/new.ejs")
+    res.render("listings/new.ejs", { title: "Add Your Home | HomeQuest" })
 };
 
 module.exports.showListing=async(req,res)=>{
@@ -31,8 +31,13 @@ module.exports.showListing=async(req,res)=>{
         to: b.checkOut.toISOString().split('T')[0]
     }));
 
-    console.log(listing);
-    res.render("listings/show.ejs",{listing, bookedRanges});
+    res.render("listings/show.ejs",{
+        listing, 
+        bookedRanges,
+        title: `${listing.title} | HomeQuest`,
+        description: listing.description ? listing.description.substring(0, 160) : "Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.",
+        ogImage: listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image ? listing.image.url : "/logo.png")
+    });
 };
 
 module.exports.createListing = async (req, res, next) => {
@@ -67,7 +72,10 @@ module.exports.renderEditForm=async (req,res)=>{
     if (originalImageUrl) {
         originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
     }
-    res.render("listings/edit.ejs",{listing});
+    res.render("listings/edit.ejs",{
+        listing,
+        title: `Edit ${listing.title} | HomeQuest`
+    });
 };
 
 module.exports.updateListing = async (req, res) => {
@@ -129,7 +137,9 @@ module.exports.index = async (req, res) => {
         searchQuery: q, 
         activeCategory: category,
         minPrice: minPrice || "",
-        maxPrice: maxPrice || ""
+        maxPrice: maxPrice || "",
+        title: "Discover Unique Stays | HomeQuest",
+        description: "Explore the best vacation rentals, luxury homes, and unique stays with HomeQuest. Book your next adventure today."
     });
   };
 
@@ -156,7 +166,8 @@ module.exports.renderDashboard = async (req, res) => {
         bookings, 
         totalEarnings, 
         totalBookings,
-        upcomingBookings 
+        upcomingBookings,
+        title: "Host Dashboard | HomeQuest"
     });
 };
 

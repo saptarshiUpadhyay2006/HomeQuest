@@ -80,7 +80,8 @@ module.exports.createBooking = async (req, res) => {
             booking: newBooking,
             listing,
             key_id: process.env.RAZORPAY_KEY_ID,
-            user: req.user
+            user: req.user,
+            title: `Checkout Booking - ${listing.title} | HomeQuest`
         });
     } catch (err) {
         console.log(err);
@@ -127,7 +128,10 @@ module.exports.verifyPayment = async (req, res) => {
 
 module.exports.index = async (req, res) => {
     const bookings = await Booking.find({ user: req.user._id }).populate("listing").sort({ createdAt: -1 });
-    res.render("bookings/index.ejs", { bookings });
+    res.render("bookings/index.ejs", { 
+        bookings,
+        title: "My Bookings | HomeQuest"
+    });
 };
 
 module.exports.showBooking = async (req, res) => {
@@ -142,7 +146,10 @@ module.exports.showBooking = async (req, res) => {
         req.flash("error", "You don't have permission to view this booking.");
         return res.redirect("/bookings");
     }
-    res.render("bookings/show.ejs", { booking });
+    res.render("bookings/show.ejs", { 
+        booking,
+        title: "Booking Details | HomeQuest"
+    });
 };
 
 module.exports.cancelBooking = async (req, res) => {
@@ -203,7 +210,8 @@ module.exports.checkoutBooking = async (req, res) => {
             booking,
             listing: booking.listing,
             key_id: process.env.RAZORPAY_KEY_ID,
-            user: req.user
+            user: req.user,
+            title: `Checkout Booking - ${booking.listing.title} | HomeQuest`
         });
     } catch (err) {
         console.log(err);

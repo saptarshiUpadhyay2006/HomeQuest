@@ -1,14 +1,19 @@
-<h1>About HomeQuest</h1>
-
-<p>
-  HomeQuest is a college major project developed as part of academic coursework.
-</p>
-
-<p>
-  The application demonstrates full-stack web development using
-  Node.js, Express, MongoDB, and EJS.
-</p>
-
-<p>
-  This project is not a commercial or production service.
-</p>
+<% layout("/layouts/boilerplate") -%>
+<%
+    locals.title = "About HomeQuest - Academic Major Project";
+    locals.description = "Learn about HomeQuest, an academic full-stack web application designed to demonstrate modern web development practices.";
+%>
+<div class="row mt-4 mb-5 justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-4">About HomeQuest</h1>
+        <p class="lead">
+            HomeQuest is a college major project developed as part of academic coursework.
+        </p>
+        <p>
+            The application demonstrates full-stack web development using Node.js, Express, MongoDB, and EJS.
+        </p>
+        <p class="text-muted">
+            This project is not a commercial or production service.
+        </p>
+    </div>
+</div>

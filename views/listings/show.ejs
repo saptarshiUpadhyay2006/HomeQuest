@@ -1,27 +1,30 @@
 <% layout("/layouts/boilerplate") -%>
 <% 
-    const title = listing.title + " | HomeQuest";
-    const description = listing.description.substring(0, 160);
-    const ogImage = listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image ? listing.image.url : "/logo.png");
-    const canonicalUrl = "/listings/" + listing._id;
+    locals.title = listing.title + " | HomeQuest";
+    locals.description = listing.description ? listing.description.substring(0, 160) : "Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.";
+    locals.ogImage = listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image ? listing.image.url : "/logo.png");
+    locals.canonicalUrl = "/listings/" + listing._id;
 %>
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Accommodation",
-  "name": "<%= listing.title %>",
-  "description": "<%= listing.description %>",
+  "name": "<%- listing.title.replace(/"/g, '\\"') %>",
+  "description": "<%- listing.description ? listing.description.replace(/"/g, '\\"') : '' %>",
   "address": {
     "@type": "PostalAddress",
-    "addressLocality": "<%= listing.location %>",
-    "addressCountry": "<%= listing.country %>"
+    "addressLocality": "<%- listing.location.replace(/"/g, '\\"') %>",
+    "addressCountry": "<%- listing.country.replace(/"/g, '\\"') %>"
   },
-  "image": "<%= ogImage %>",
+  "image": "<%- locals.ogImage %>",
+  "url": "https://homequest-spuk.vercel.app/listings/<%= listing._id %>",
   "offers": {
     "@type": "Offer",
     "price": "<%= listing.price %>",
-    "priceCurrency": "INR"
+    "priceCurrency": "INR",
+    "availability": "https://schema.org/InStock",
+    "priceValidUntil": "2027-12-31"
   }
 }
 </script>

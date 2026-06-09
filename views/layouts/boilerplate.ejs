@@ -12,17 +12,17 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://homequest-spuk.vercel.app/">
+    <meta property="og:url" content="https://homequest-spuk.vercel.app<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : '' %>">
     <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'HomeQuest - Discover Your Perfect Stay' %>">
     <meta property="og:description" content="<%= typeof description !== 'undefined' ? description : 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.' %>">
-    <meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/logo.png' %>">
+    <meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? (ogImage.startsWith('http') ? ogImage : 'https://homequest-spuk.vercel.app' + ogImage) : 'https://homequest-spuk.vercel.app/logo.png' %>">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://homequest-spuk.vercel.app/">
+    <meta property="twitter:url" content="https://homequest-spuk.vercel.app<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : '' %>">
     <meta property="twitter:title" content="<%= typeof title !== 'undefined' ? title : 'HomeQuest - Discover Your Perfect Stay' %>">
     <meta property="twitter:description" content="<%= typeof description !== 'undefined' ? description : 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.' %>">
-    <meta property="twitter:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/logo.png' %>">
+    <meta property="twitter:image" content="<%= typeof ogImage !== 'undefined' ? (ogImage.startsWith('http') ? ogImage : 'https://homequest-spuk.vercel.app' + ogImage) : 'https://homequest-spuk.vercel.app/logo.png' %>">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://homequest-spuk.vercel.app<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : '' %>">

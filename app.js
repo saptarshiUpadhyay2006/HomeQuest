@@ -15,6 +15,7 @@ const flash = require("connect-flash");
 const LocalStrategy = require("passport-local");
 const passport = require("passport");
 const User = require("./models/user.js");
+const Listing = require("./models/listing.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -119,8 +120,67 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    
+    // Default SEO Metadata
+    res.locals.title = 'HomeQuest - Discover Your Perfect Stay';
+    res.locals.description = 'Discover the most beautiful and unique stays around the world with HomeQuest. Book your perfect getaway today.';
+    res.locals.ogImage = 'https://homequest-spuk.vercel.app/logo.png';
+    res.locals.canonicalUrl = req.path;
     next();
 })
+
+// Dynamic Sitemap Route
+app.get("/sitemap.xml", async (req, res) => {
+    try {
+        res.header('Content-Type', 'application/xml');
+        const listings = await Listing.find({}, '_id updatedAt');
+        
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://homequest-spuk.vercel.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://homequest-spuk.vercel.app/listings</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://homequest-spuk.vercel.app/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://homequest-spuk.vercel.app/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://homequest-spuk.vercel.app/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>`;
+
+        listings.forEach(listing => {
+            const lastMod = listing.updatedAt ? listing.updatedAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+            xml += `
+  <url>
+    <loc>https://homequest-spuk.vercel.app/listings/${listing._id}</loc>
+    <lastmod>${lastMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+        });
+
+        xml += '\n</urlset>';
+        res.send(xml);
+    } catch (e) {
+        console.error("Sitemap generation error:", e);
+        res.status(500).send("Error generating sitemap");
+    }
+});
 
 // app.get("/demouser",async(req,res)=>{
 //     let fakeUser=new User({
@@ -141,11 +201,24 @@ app.get("/", (req, res) => {
     res.redirect("/listings");
 });
 app.get("/about", (req, res) => {
-    res.render("about");
+    res.render("about", {
+        title: "About HomeQuest - Academic Major Project",
+        description: "Learn about HomeQuest, an academic full-stack web application designed to demonstrate modern web development practices."
+    });
 });
 
 app.get("/privacy", (req, res) => {
-    res.render("privacy");
+    res.render("privacy", {
+        title: "Privacy Policy | HomeQuest",
+        description: "Read the privacy disclaimer for HomeQuest. Since this is an academic project, no real personal or financial data is processed."
+    });
+});
+
+app.get("/terms", (req, res) => {
+    res.render("terms", {
+        title: "Terms of Service | HomeQuest",
+        description: "Read the terms of service disclaimer for HomeQuest. Since this is an academic college project, no real business rules apply."
+    });
 });
 
 const PORT = process.env.PORT || 8080;
